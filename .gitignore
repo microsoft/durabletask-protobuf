@@ -1,0 +1,6 @@
+# ignore IDE-specific files
+.vscode/
+
+# ignore build output
+bin/
+obj/
