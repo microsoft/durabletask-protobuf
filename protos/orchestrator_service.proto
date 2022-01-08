@@ -1,0 +1,326 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+syntax = "proto3";
+
+option csharp_namespace = "DurableTask.Protobuf";
+option java_package = "com.microsoft.durabletask.protobuf";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
+message OrchestrationInstance {
+    string instanceId = 1;
+    google.protobuf.StringValue executionId = 2;
+}
+
+message ActivityRequest {
+    string name = 1;
+    google.protobuf.StringValue version = 2;
+    google.protobuf.StringValue input = 3;
+    OrchestrationInstance orchestrationInstance = 4;
+    int32 taskId = 5;
+}
+
+message ActivityResponse {
+    string instanceId = 1;
+    int32 taskId = 2;
+    google.protobuf.StringValue result = 3;
+}
+
+enum OrchestrationStatus {
+    ORCHESTRATION_STATUS_RUNNING = 0;
+    ORCHESTRATION_STATUS_COMPLETED = 1;
+    ORCHESTRATION_STATUS_CONTINUED_AS_NEW = 2;
+    ORCHESTRATION_STATUS_FAILED = 3;
+    ORCHESTRATION_STATUS_CANCELED = 4;
+    ORCHESTRATION_STATUS_TERMINATED = 5;
+    ORCHESTRATION_STATUS_PENDING = 6;
+}
+
+message ParentInstanceInfo {
+    int32 taskScheduledId = 1;
+    google.protobuf.StringValue name = 2;
+    google.protobuf.StringValue version = 3;
+    OrchestrationInstance orchestrationInstance = 4;
+}
+
+message ExecutionStartedEvent {
+    string name = 1;
+    google.protobuf.StringValue version = 2;
+    google.protobuf.StringValue input = 3;
+    OrchestrationInstance orchestrationInstance = 4;
+    ParentInstanceInfo parentInstance = 5;
+    google.protobuf.Timestamp scheduledStartTimestamp = 6;
+    google.protobuf.StringValue correlationData = 7;
+}
+
+message ExecutionCompletedEvent {
+    OrchestrationStatus orchestrationStatus = 1;
+    google.protobuf.StringValue result = 2;
+}
+
+message ExecutionTerminatedEvent {
+    google.protobuf.StringValue input = 1;
+}
+
+message TaskScheduledEvent {
+    string name = 1;
+    google.protobuf.StringValue version = 2;
+    google.protobuf.StringValue input = 3;    
+}
+
+message TaskCompletedEvent {
+    int32 taskScheduledId = 1;
+    google.protobuf.StringValue result = 2;
+}
+
+message TaskFailedEvent {
+    int32 taskScheduledId = 1;
+    google.protobuf.StringValue details = 2;
+    google.protobuf.StringValue reason = 3;
+}
+
+message SubOrchestrationInstanceCreatedEvent {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue version = 3;
+    google.protobuf.StringValue input = 4;
+}
+
+message SubOrchestrationInstanceCompletedEvent {
+    int32 taskScheduledId = 1;
+    google.protobuf.StringValue result = 2;
+}
+
+message SubOrchestrationInstanceFailedEvent {
+    int32 taskScheduledId = 1;
+    google.protobuf.StringValue details = 2;
+    google.protobuf.StringValue reason = 3;
+}
+
+message TimerCreatedEvent {
+    google.protobuf.Timestamp fireAt = 1;
+}
+
+message TimerFiredEvent {
+    google.protobuf.Timestamp fireAt = 1;
+    int32 timerId = 2;
+}
+
+message OrchestratorStartedEvent {
+    // No payload data
+}
+
+message OrchestratorCompletedEvent {
+    // No payload data
+}
+
+message EventSentEvent {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue input = 3;
+}
+
+message EventRaisedEvent {
+    string name = 1;
+    google.protobuf.StringValue input = 2;
+}
+
+message GenericEvent {
+    string data = 1;
+}
+
+message HistoryStateEvent {
+    OrchestrationState orchestrationState = 1;
+}
+
+message ContinueAsNewEvent {
+    google.protobuf.StringValue input = 1;
+}
+
+message HistoryEvent {
+    int32 eventId = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    oneof eventType {
+        ExecutionStartedEvent executionStarted = 3;
+        ExecutionCompletedEvent executionCompleted = 4;
+        ExecutionTerminatedEvent executionTerminated = 5;
+        TaskScheduledEvent taskScheduled = 6;
+        TaskCompletedEvent taskCompleted = 7;
+        TaskFailedEvent taskFailed = 8;
+        SubOrchestrationInstanceCreatedEvent subOrchestrationInstanceCreated = 9;
+        SubOrchestrationInstanceCompletedEvent subOrchestrationInstanceCompleted = 10;
+        SubOrchestrationInstanceFailedEvent subOrchestrationInstanceFailed = 11;
+        TimerCreatedEvent timerCreated = 12;
+        TimerFiredEvent timerFired = 13;
+        OrchestratorStartedEvent orchestratorStarted = 14;
+        OrchestratorCompletedEvent orchestratorCompleted = 15;
+        EventSentEvent eventSent = 16;
+        EventRaisedEvent eventRaised = 17;
+        GenericEvent genericEvent = 18;
+        HistoryStateEvent historyState = 19;
+        ContinueAsNewEvent continueAsNew = 20;
+    }
+}
+
+message ScheduleTaskAction {
+    string name = 1;
+    google.protobuf.StringValue version = 2;
+    google.protobuf.StringValue input = 3;
+}
+
+message CreateSubOrchestrationAction {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue version = 3;
+    google.protobuf.StringValue input = 4;
+}
+
+message CreateTimerAction {
+    google.protobuf.Timestamp fireAt = 1;
+}
+
+message SendEventAction {
+    OrchestrationInstance instance = 1;
+    string name = 2;
+    google.protobuf.StringValue data = 3;
+}
+
+message CompleteOrchestrationAction {
+    OrchestrationStatus orchestrationStatus = 1;
+    google.protobuf.StringValue result = 2;
+    google.protobuf.StringValue details = 3;
+    google.protobuf.StringValue newVersion = 4;
+    repeated HistoryEvent carryoverEvents = 5;
+}
+
+message OrchestratorAction {
+    int32 id = 1;
+    oneof orchestratorActionType {
+        ScheduleTaskAction scheduleTask = 2;
+        CreateSubOrchestrationAction createSubOrchestration = 3;
+        CreateTimerAction createTimer = 4;
+        SendEventAction sendEvent = 5;
+        CompleteOrchestrationAction completeOrchestration = 6;
+    }
+}
+
+message OrchestratorRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue executionId = 2;
+    repeated HistoryEvent pastEvents = 3;
+    repeated HistoryEvent newEvents = 4;
+}
+
+message OrchestratorResponse {
+    string instanceId = 1;
+    repeated OrchestratorAction actions = 2;
+    google.protobuf.StringValue customStatus = 3;
+}
+
+service TaskHubWorkerService {
+    rpc ExecuteOrchestrator(OrchestratorRequest) returns (OrchestratorResponse);
+    rpc ExecuteActivity(ActivityRequest) returns (ActivityResponse);
+}
+
+message CreateInstanceRequest {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue version = 3;
+    google.protobuf.StringValue input = 4;
+    google.protobuf.Timestamp scheduledStartTimestamp = 5;
+}
+
+message CreateInstanceResponse {
+    string instanceId = 1;
+}
+
+message GetInstanceRequest {
+    string instanceId = 1;
+    bool getInputsAndOutputs = 2;
+}
+
+message GetInstanceResponse {
+    bool exists = 1;
+    OrchestrationState orchestrationState = 2;
+}
+
+message OrchestrationState {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue version = 3;
+    OrchestrationStatus orchestrationStatus = 4;
+    google.protobuf.Timestamp scheduledStartTimestamp = 5;
+    google.protobuf.Timestamp createdTimestamp = 6;
+    google.protobuf.Timestamp lastUpdatedTimestamp = 7;
+    google.protobuf.StringValue input = 8;
+    google.protobuf.StringValue output = 9;
+    google.protobuf.StringValue customStatus = 10;
+}
+
+message RaiseEventRequest {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue input = 3;
+}
+
+message RaiseEventResponse {
+    // No payload
+}
+
+message TerminateRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue output = 2;
+}
+
+message TerminateResponse {
+    // No payload
+}
+
+service TaskHubSidecarService {
+    // Sends a hello request to the sidecar service.
+    rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+    // Starts a new orchestration instance.
+    rpc StartInstance(CreateInstanceRequest) returns (CreateInstanceResponse);
+
+    // Gets the status of an existing orchestration instance.
+    rpc GetInstance(GetInstanceRequest) returns (GetInstanceResponse);
+
+    // Waits for an orchestration instance to reach a running or completion state.
+    rpc WaitForInstanceStart(GetInstanceRequest) returns (GetInstanceResponse);
+    
+    // Waits for an orchestration instance to reach a completion state (completed, failed, terminated, etc.).
+    rpc WaitForInstanceCompletion(GetInstanceRequest) returns (GetInstanceResponse);
+
+    // Raises an event to a running orchestration instance.
+    rpc RaiseEvent(RaiseEventRequest) returns (RaiseEventResponse);
+    
+    // Terminates a running orchestration instance
+    rpc TerminateInstance(TerminateRequest) returns (TerminateResponse);
+
+    // rpc DeleteInstance(DeleteInstanceRequest) returns (DeleteInstanceResponse);
+    // rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
+    // rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
+
+    rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
+    rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
+    rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
+}
+
+message GetWorkItemsRequest {
+    // No parameters currently
+}
+
+message WorkItem {
+    oneof request {
+        OrchestratorRequest orchestratorRequest = 1;
+        ActivityRequest activityRequest = 2;
+    }
+}
+
+message CompleteTaskResponse {
+    // No payload
+}
