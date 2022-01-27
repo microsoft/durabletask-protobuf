@@ -27,6 +27,13 @@ message ActivityResponse {
     string instanceId = 1;
     int32 taskId = 2;
     google.protobuf.StringValue result = 3;
+    TaskFailureDetails failureDetails = 4;
+}
+
+message TaskFailureDetails {
+    string errorName = 1;
+    string errorMessage = 2;
+    string errorDetails = 3;
 }
 
 enum OrchestrationStatus {
@@ -80,6 +87,8 @@ message TaskFailedEvent {
     int32 taskScheduledId = 1;
     google.protobuf.StringValue details = 2;
     google.protobuf.StringValue reason = 3;
+    
+    // TODO: Replace details/reason with TaskFailureDetails
 }
 
 message SubOrchestrationInstanceCreatedEvent {
@@ -98,6 +107,8 @@ message SubOrchestrationInstanceFailedEvent {
     int32 taskScheduledId = 1;
     google.protobuf.StringValue details = 2;
     google.protobuf.StringValue reason = 3;
+
+    // TODO: Replace details/reason with TaskFailureDetails
 }
 
 message TimerCreatedEvent {
