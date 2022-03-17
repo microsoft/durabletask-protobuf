@@ -85,10 +85,7 @@ message TaskCompletedEvent {
 
 message TaskFailedEvent {
     int32 taskScheduledId = 1;
-    google.protobuf.StringValue details = 2;
-    google.protobuf.StringValue reason = 3;
-    
-    // TODO: Replace details/reason with TaskFailureDetails
+    TaskFailureDetails failureDetails = 2;
 }
 
 message SubOrchestrationInstanceCreatedEvent {
@@ -105,10 +102,7 @@ message SubOrchestrationInstanceCompletedEvent {
 
 message SubOrchestrationInstanceFailedEvent {
     int32 taskScheduledId = 1;
-    google.protobuf.StringValue details = 2;
-    google.protobuf.StringValue reason = 3;
-
-    // TODO: Replace details/reason with TaskFailureDetails
+    TaskFailureDetails failureDetails = 2;
 }
 
 message TimerCreatedEvent {
@@ -205,6 +199,7 @@ message CompleteOrchestrationAction {
     google.protobuf.StringValue details = 3;
     google.protobuf.StringValue newVersion = 4;
     repeated HistoryEvent carryoverEvents = 5;
+    TaskFailureDetails failureDetails = 6;
 }
 
 message OrchestratorAction {
@@ -269,6 +264,7 @@ message OrchestrationState {
     google.protobuf.StringValue input = 8;
     google.protobuf.StringValue output = 9;
     google.protobuf.StringValue customStatus = 10;
+    TaskFailureDetails failureDetails = 11;
 }
 
 message RaiseEventRequest {
