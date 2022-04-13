@@ -298,7 +298,7 @@ message InstanceQuery{
     google.protobuf.Timestamp createdTimeFrom = 2;
     google.protobuf.Timestamp createdTimeTo = 3;
     repeated google.protobuf.StringValue taskHubNames = 4;
-    int32 pageSize = 5;
+    int32 maxInstanceCount = 5;
     google.protobuf.StringValue continuationToken = 6;
     google.protobuf.StringValue instanceIdPrefix = 7;
     bool fetchInputsAndOutputs = 8;
