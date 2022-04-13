@@ -289,6 +289,31 @@ message TerminateResponse {
     // No payload
 }
 
+message QueryInstancesRequest {
+    InstanceQuery query = 1;
+    CancellationToken CancellationToken = 2;
+}
+
+message InstanceQuery{
+    repeated OrchestrationStatus runtimeStatus = 1;
+    google.protobuf.Timestamp createdTimeFrom = 2;
+    google.protobuf.Timestamp createdTimeTo = 3;
+    repeated google.protobuf.StringValue taskHubNames = 4;
+    int32 pageSize = 5;
+    google.protobuf.StringValue continuationToken = 6;
+    google.protobuf.StringValue instanceIdPrefix = 7;
+    bool fetchInputsAndOutputs = 8;
+}
+
+message CancellationToken{
+    //TODO: how should this message be defined
+}
+
+message QueryInstancesResponse {
+    repeated OrchestrationState orchestrationState = 1;
+    google.protobuf.StringValue continuationToken = 6;
+}
+
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -312,7 +337,7 @@ service TaskHubSidecarService {
     rpc TerminateInstance(TerminateRequest) returns (TerminateResponse);
 
     // rpc DeleteInstance(DeleteInstanceRequest) returns (DeleteInstanceResponse);
-    // rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
+    rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
     // rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
