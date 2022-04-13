@@ -305,13 +305,9 @@ message InstanceQuery{
     bool fetchInputsAndOutputs = 8;
 }
 
-message CancellationToken{
-    //TODO: how should this message be defined
-}
-
 message QueryInstancesResponse {
     repeated OrchestrationState orchestrationState = 1;
-    google.protobuf.StringValue continuationToken = 6;
+    google.protobuf.StringValue continuationToken = 2;
 }
 
 service TaskHubSidecarService {
