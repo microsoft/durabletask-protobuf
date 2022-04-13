@@ -291,7 +291,6 @@ message TerminateResponse {
 
 message QueryInstancesRequest {
     InstanceQuery query = 1;
-    CancellationToken CancellationToken = 2;
 }
 
 message InstanceQuery{
