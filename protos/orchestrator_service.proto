@@ -309,6 +309,23 @@ message QueryInstancesResponse {
     google.protobuf.StringValue continuationToken = 2;
 }
 
+message PurgeInstancesRequest {
+    oneof request {
+        string instanceId = 1;
+        PurgeInstanceFilter purgeInstanceFilter = 2;
+    }
+}
+
+message PurgeInstanceFilter {
+    google.protobuf.Timestamp createdTimeFrom = 1;
+    google.protobuf.Timestamp createdTimeTo = 2;
+    repeated OrchestrationStatus runtimeStatus = 3;
+}
+
+message PurgeInstancesResponse {
+    int32 deletedInstanceCount = 1;
+}
+
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -333,7 +350,7 @@ service TaskHubSidecarService {
 
     // rpc DeleteInstance(DeleteInstanceRequest) returns (DeleteInstanceResponse);
     rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
-    // rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
+    rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
