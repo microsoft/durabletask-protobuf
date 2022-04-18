@@ -326,6 +326,14 @@ message PurgeInstancesResponse {
     int32 deletedInstanceCount = 1;
 }
 
+message ResourcesRequest {
+    bool resetInstanceStore = 1;
+}
+
+message ResourcesResponse {
+    //no playload
+}
+
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -355,6 +363,12 @@ service TaskHubSidecarService {
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
+
+    // Deletes and Creates the necessary resources for the orchestration service and the instance store
+    rpc CreateResourcesAsync(ResourcesRequest) returns (ResourcesResponse);
+
+    // Deletes the resources for the orchestration service and optionally the instance store
+    rpc DeleteResourcesAsync(ResourcesRequest) returns (ResourcesResponse);
 }
 
 message GetWorkItemsRequest {
