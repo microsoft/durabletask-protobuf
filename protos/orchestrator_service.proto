@@ -335,7 +335,7 @@ message CreateTaskHubResponse {
 }
 
 message DeleteTaskHubRequest {
-    bool recreateIfExists = 1;
+    //no playload
 }
 
 message DeleteTaskHubResponse {
