@@ -326,11 +326,19 @@ message PurgeInstancesResponse {
     int32 deletedInstanceCount = 1;
 }
 
-message ResourcesRequest {
-    bool resetInstanceStore = 1;
+message CreateTaskHubRequest {
+    bool recreateIfExists = 1;
 }
 
-message ResourcesResponse {
+message CreateTaskHubResponse {
+    //no playload
+}
+
+message DeleteTaskHubRequest {
+    bool recreateIfExists = 1;
+}
+
+message DeleteTaskHubResponse {
     //no playload
 }
 
@@ -365,10 +373,10 @@ service TaskHubSidecarService {
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
 
     // Deletes and Creates the necessary resources for the orchestration service and the instance store
-    rpc CreateResourcesAsync(ResourcesRequest) returns (ResourcesResponse);
+    rpc CreateTaskHub(CreateTaskHubRequest) returns (CreateTaskHubResponse);
 
     // Deletes the resources for the orchestration service and optionally the instance store
-    rpc DeleteResourcesAsync(ResourcesRequest) returns (ResourcesResponse);
+    rpc DeleteTaskHub(DeleteTaskHubRequest) returns (DeleteTaskHubResponse);
 }
 
 message GetWorkItemsRequest {
