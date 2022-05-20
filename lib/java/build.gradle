@@ -13,7 +13,7 @@ archivesBaseName = 'durabletask-grpc'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-def grpcVersion = '1.38.0'
+def grpcVersion = '1.46.0'
 def protobufVersion = '3.12.0'
 def protocVersion = protobufVersion
 
