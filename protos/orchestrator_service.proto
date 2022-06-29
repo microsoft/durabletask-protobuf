@@ -302,6 +302,13 @@ message InstanceQuery{
     google.protobuf.StringValue continuationToken = 6;
     google.protobuf.StringValue instanceIdPrefix = 7;
     bool fetchInputsAndOutputs = 8;
+    Order sortOrder = 9;
+}
+
+enum Order {
+    Unspecified = 0;
+    Ascending = 1;
+    Descending = 2;
 }
 
 message QueryInstancesResponse {
