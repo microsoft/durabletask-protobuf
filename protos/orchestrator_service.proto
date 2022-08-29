@@ -256,6 +256,17 @@ message GetInstanceResponse {
     OrchestrationState orchestrationState = 2;
 }
 
+message GetInstanceHistoryRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue executionId = 2;
+}
+
+message GetInstanceHistoryResponse {
+    string instanceId = 1;
+    string executionId = 2;
+    repeated HistoryEvent events = 3;
+}
+
 message OrchestrationState {
     string instanceId = 1;
     string name = 2;
@@ -351,6 +362,9 @@ service TaskHubSidecarService {
 
     // Gets the status of an existing orchestration instance.
     rpc GetInstance(GetInstanceRequest) returns (GetInstanceResponse);
+
+    // Gets the instance history of an orchestration instance.
+    rpc GetInstanceHistory(GetInstanceHistoryRequest) returns (GetInstanceHistoryResponse);
 
     // Waits for an orchestration instance to reach a running or completion state.
     rpc WaitForInstanceStart(GetInstanceRequest) returns (GetInstanceResponse);
