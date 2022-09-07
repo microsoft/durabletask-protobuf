@@ -258,7 +258,7 @@ message GetInstanceResponse {
 
 message RewindInstanceRequest {
     string instanceId = 1;
-    string reason = 2;
+    google.protobuf.StringValue reason = 2;
 }
 
 message RewindInstanceResponse {
