@@ -5,6 +5,7 @@ syntax = "proto3";
 
 option csharp_namespace = "Microsoft.DurableTask.Protobuf";
 option java_package = "com.microsoft.durabletask.implementation.protobuf";
+option go_package = "/internal/protos";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
@@ -227,11 +228,6 @@ message OrchestratorResponse {
     string instanceId = 1;
     repeated OrchestratorAction actions = 2;
     google.protobuf.StringValue customStatus = 3;
-}
-
-service TaskHubWorkerService {
-    rpc ExecuteOrchestrator(OrchestratorRequest) returns (OrchestratorResponse);
-    rpc ExecuteActivity(ActivityRequest) returns (ActivityResponse);
 }
 
 message CreateInstanceRequest {
