@@ -3,6 +3,8 @@
 
 syntax = "proto3";
 
+package durabletask.protos.v1;
+
 option csharp_namespace = "Microsoft.DurableTask.Protobuf";
 option java_package = "com.microsoft.durabletask.implementation.protobuf";
 option go_package = "/internal/protos";
