@@ -252,6 +252,15 @@ message GetInstanceResponse {
     OrchestrationState orchestrationState = 2;
 }
 
+message RewindInstanceRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue reason = 2;
+}
+
+message RewindInstanceResponse {
+    // Empty for now. Using explicit type incase we want to add content later.
+}
+
 message OrchestrationState {
     string instanceId = 1;
     string name = 2;
@@ -347,6 +356,9 @@ service TaskHubSidecarService {
 
     // Gets the status of an existing orchestration instance.
     rpc GetInstance(GetInstanceRequest) returns (GetInstanceResponse);
+
+    // Rewinds an orchestration instance to last known good state and replays from there.
+    rpc RewindInstance(RewindInstanceRequest) returns (RewindInstanceResponse);
 
     // Waits for an orchestration instance to reach a running or completion state.
     rpc WaitForInstanceStart(GetInstanceRequest) returns (GetInstanceResponse);
