@@ -294,6 +294,24 @@ message TerminateResponse {
     // No payload
 }
 
+message SuspendRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue reason = 2;
+}
+
+message SuspendResponse {
+    // No payload
+}
+
+message ResumeRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue reason = 2;
+}
+
+message ResumeResponse {
+    // No payload
+}
+
 message QueryInstancesRequest {
     InstanceQuery query = 1;
 }
@@ -369,10 +387,17 @@ service TaskHubSidecarService {
     // Raises an event to a running orchestration instance.
     rpc RaiseEvent(RaiseEventRequest) returns (RaiseEventResponse);
     
-    // Terminates a running orchestration instance
+    // Terminates a running orchestration instance.
     rpc TerminateInstance(TerminateRequest) returns (TerminateResponse);
+    
+    // Suspends a running orchestration instance.
+    rpc SuspendInstance(SuspendRequest) returns (SuspendResponse);
+
+    // Resumes a suspended orchestration instance.
+    rpc ResumeInstance(ResumeRequest) returns (ResumeResponse);
 
     // rpc DeleteInstance(DeleteInstanceRequest) returns (DeleteInstanceResponse);
+
     rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
     rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
