@@ -47,6 +47,7 @@ enum OrchestrationStatus {
     ORCHESTRATION_STATUS_CANCELED = 4;
     ORCHESTRATION_STATUS_TERMINATED = 5;
     ORCHESTRATION_STATUS_PENDING = 6;
+    ORCHESTRATION_STATUS_SUSPENDED = 7;
 }
 
 message ParentInstanceInfo {
@@ -149,6 +150,14 @@ message ContinueAsNewEvent {
     google.protobuf.StringValue input = 1;
 }
 
+message ExecutionSuspendedEvent {
+    google.protobuf.StringValue input = 1;
+}
+
+message ExecutionResumedEvent {
+    google.protobuf.StringValue input = 1;
+}
+
 message HistoryEvent {
     int32 eventId = 1;
     google.protobuf.Timestamp timestamp = 2;
@@ -171,6 +180,8 @@ message HistoryEvent {
         GenericEvent genericEvent = 18;
         HistoryStateEvent historyState = 19;
         ContinueAsNewEvent continueAsNew = 20;
+        ExecutionSuspendedEvent executionSuspended = 21;
+        ExecutionResumedEvent executionResumed = 22;
     }
 }
 
@@ -294,6 +305,24 @@ message TerminateResponse {
     // No payload
 }
 
+message SuspendRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue reason = 2;
+}
+
+message SuspendResponse {
+    // No payload
+}
+
+message ResumeRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue reason = 2;
+}
+
+message ResumeResponse {
+    // No payload
+}
+
 message QueryInstancesRequest {
     InstanceQuery query = 1;
 }
@@ -369,10 +398,17 @@ service TaskHubSidecarService {
     // Raises an event to a running orchestration instance.
     rpc RaiseEvent(RaiseEventRequest) returns (RaiseEventResponse);
     
-    // Terminates a running orchestration instance
+    // Terminates a running orchestration instance.
     rpc TerminateInstance(TerminateRequest) returns (TerminateResponse);
+    
+    // Suspends a running orchestration instance.
+    rpc SuspendInstance(SuspendRequest) returns (SuspendResponse);
+
+    // Resumes a suspended orchestration instance.
+    rpc ResumeInstance(ResumeRequest) returns (ResumeResponse);
 
     // rpc DeleteInstance(DeleteInstanceRequest) returns (DeleteInstanceResponse);
+
     rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
     rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
