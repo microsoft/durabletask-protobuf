@@ -47,6 +47,7 @@ enum OrchestrationStatus {
     ORCHESTRATION_STATUS_CANCELED = 4;
     ORCHESTRATION_STATUS_TERMINATED = 5;
     ORCHESTRATION_STATUS_PENDING = 6;
+    ORCHESTRATION_STATUS_SUSPENDED = 7;
 }
 
 message ParentInstanceInfo {
@@ -149,6 +150,14 @@ message ContinueAsNewEvent {
     google.protobuf.StringValue input = 1;
 }
 
+message ExecutionSuspendedEvent {
+    google.protobuf.StringValue input = 1;
+}
+
+message ExecutionResumedEvent {
+    google.protobuf.StringValue input = 1;
+}
+
 message HistoryEvent {
     int32 eventId = 1;
     google.protobuf.Timestamp timestamp = 2;
@@ -171,6 +180,8 @@ message HistoryEvent {
         GenericEvent genericEvent = 18;
         HistoryStateEvent historyState = 19;
         ContinueAsNewEvent continueAsNew = 20;
+        ExecutionSuspendedEvent executionSuspended = 21;
+        ExecutionResumedEvent executionResumed = 22;
     }
 }
 
