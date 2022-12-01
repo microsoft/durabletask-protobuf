@@ -57,6 +57,12 @@ message ParentInstanceInfo {
     OrchestrationInstance orchestrationInstance = 4;
 }
 
+message TraceContext {
+    string traceID = 1;
+    string spanID = 2;
+    google.protobuf.StringValue traceState = 3;
+}
+
 message ExecutionStartedEvent {
     string name = 1;
     google.protobuf.StringValue version = 2;
@@ -64,7 +70,8 @@ message ExecutionStartedEvent {
     OrchestrationInstance orchestrationInstance = 4;
     ParentInstanceInfo parentInstance = 5;
     google.protobuf.Timestamp scheduledStartTimestamp = 6;
-    google.protobuf.StringValue correlationData = 7;
+    TraceContext parentTraceContext = 7;
+    google.protobuf.StringValue orchestrationSpanID = 8;
 }
 
 message ExecutionCompletedEvent {
@@ -80,7 +87,8 @@ message ExecutionTerminatedEvent {
 message TaskScheduledEvent {
     string name = 1;
     google.protobuf.StringValue version = 2;
-    google.protobuf.StringValue input = 3;    
+    google.protobuf.StringValue input = 3;
+    TraceContext parentTraceContext = 4;
 }
 
 message TaskCompletedEvent {
@@ -98,6 +106,7 @@ message SubOrchestrationInstanceCreatedEvent {
     string name = 2;
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
+    TraceContext parentTraceContext = 5;
 }
 
 message SubOrchestrationInstanceCompletedEvent {
@@ -117,6 +126,7 @@ message TimerCreatedEvent {
 message TimerFiredEvent {
     google.protobuf.Timestamp fireAt = 1;
     int32 timerId = 2;
+    TraceContext parentTraceContext = 3;
 }
 
 message OrchestratorStartedEvent {
