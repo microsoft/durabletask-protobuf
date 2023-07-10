@@ -75,6 +75,7 @@ message ExecutionCompletedEvent {
 
 message ExecutionTerminatedEvent {
     google.protobuf.StringValue input = 1;
+    bool recurse = 2;
 }
 
 message TaskScheduledEvent {
@@ -217,6 +218,12 @@ message CompleteOrchestrationAction {
     TaskFailureDetails failureDetails = 6;
 }
 
+message TerminateOrchestrationAction {
+    string instanceId = 1;
+    google.protobuf.StringValue reason = 2;
+    bool recurse = 3;
+}
+
 message OrchestratorAction {
     int32 id = 1;
     oneof orchestratorActionType {
@@ -225,6 +232,7 @@ message OrchestratorAction {
         CreateTimerAction createTimer = 4;
         SendEventAction sendEvent = 5;
         CompleteOrchestrationAction completeOrchestration = 6;
+        TerminateOrchestrationAction terminateOrchestration = 7;
     }
 }
 
@@ -299,6 +307,7 @@ message RaiseEventResponse {
 message TerminateRequest {
     string instanceId = 1;
     google.protobuf.StringValue output = 2;
+    bool recursive = 3;
 }
 
 message TerminateResponse {
