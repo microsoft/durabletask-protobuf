@@ -556,18 +556,6 @@ service TaskHubSidecarService {
 
     // clean entity storage
     rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
-
-    // sends a signal to an entity
-    rpc SignalEntity(SignalEntityRequest) returns (SignalEntityResponse);
-
-    // get information about a specific entity
-    rpc GetEntity(GetEntityRequest) returns (GetEntityResponse);
-
-    // query entities
-    rpc QueryEntities(QueryEntitiesRequest) returns (QueryEntitiesResponse);
-
-    // clean entity storage
-    rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
 }
 
 message GetWorkItemsRequest {
