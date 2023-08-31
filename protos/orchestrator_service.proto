@@ -381,7 +381,8 @@ message SignalEntityRequest {
     string name = 2;
     google.protobuf.StringValue input = 3;
     bytes guid = 4;
-    google.protobuf.Timestamp scheduledTime = 5;
+    bool hasScheduledTime = 5;
+    google.protobuf.Timestamp scheduledTime = 6;
 }
 
 message SignalEntityResponse {
@@ -403,11 +404,13 @@ message GetEntityResponse
 message EntityQuery
 {
     google.protobuf.StringValue instanceIdStartsWith = 1;
-    google.protobuf.Timestamp lastModifiedFrom = 2;
-    google.protobuf.Timestamp lastModifiedTo = 3;
-    bool includeState = 4;
-    int32 pageSize = 5;
-    google.protobuf.StringValue continuationToken = 6;
+    bool hasLastModifiedFrom = 2;
+    google.protobuf.Timestamp lastModifiedFrom = 3;
+    bool hasLastModifiedTo = 4;
+    google.protobuf.Timestamp lastModifiedTo = 5;
+    bool includeState = 6;
+    int32 pageSize = 7;
+    google.protobuf.StringValue continuationToken = 8;
 }
 
 message QueryEntitiesRequest
@@ -445,6 +448,12 @@ message EntityBatchRequest {
     string instanceId = 2;
     google.protobuf.StringValue entityState = 3;
     repeated OperationRequest requests = 4;
+}
+
+message EntityBackendProperties
+{
+    int64 entityMessageReorderWindow = 1;
+    int64 maximumSignalDelayTime = 2;
 }
 
 message EntityBatchResult {
@@ -535,6 +544,18 @@ service TaskHubSidecarService {
 
     // Deletes the resources for the orchestration service and optionally the instance store
     rpc DeleteTaskHub(DeleteTaskHubRequest) returns (DeleteTaskHubResponse);
+
+    // sends a signal to an entity
+    rpc SignalEntity(SignalEntityRequest) returns (SignalEntityResponse);
+
+    // get information about a specific entity
+    rpc GetEntity(GetEntityRequest) returns (GetEntityResponse);
+
+    // query entities
+    rpc QueryEntities(QueryEntitiesRequest) returns (QueryEntitiesResponse);
+
+    // clean entity storage
+    rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
 
     // sends a signal to an entity
     rpc SignalEntity(SignalEntityRequest) returns (SignalEntityResponse);
