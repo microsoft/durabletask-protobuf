@@ -441,22 +441,17 @@ message CleanEntityStorageResponse
 }
 
 message EntityBatchRequest {
-    string instanceId = 1;
-    google.protobuf.StringValue entityState = 2;
-    repeated OperationRequest requests = 3;
-    EntityBackendProperties entityBackendProperties = 4;
-}
-
-message EntityBackendProperties
-{
-    int64 entityMessageReorderWindow = 1;
-    int64 maximumSignalDelayTime = 2;
+    string workItemId = 1;
+    string instanceId = 2;
+    google.protobuf.StringValue entityState = 3;
+    repeated OperationRequest requests = 4;
 }
 
 message EntityBatchResult {
-    repeated OperationResult results = 1;
-    repeated OperationAction actions = 2;
-    google.protobuf.StringValue entityState = 3;
+    string workItemId = 1;
+    repeated OperationResult results = 2;
+    repeated OperationAction actions = 3;
+    google.protobuf.StringValue entityState = 4;
 }
 
 message OperationRequest {
@@ -466,8 +461,9 @@ message OperationRequest {
 }
 
 message OperationResult {
-    google.protobuf.StringValue result = 3;
-    TaskFailureDetails failureDetails = 4;
+    google.protobuf.StringValue result = 1;
+    google.protobuf.StringValue errorCategory = 2;
+    TaskFailureDetails failureDetails = 3;
 }
 
 message OperationAction {
@@ -482,7 +478,8 @@ message SendSignalAction {
     string instanceId = 1;
     string name = 2;
     google.protobuf.StringValue input = 3;
-    google.protobuf.Timestamp scheduledTime = 4;
+    bool hasScheduledTime = 4;
+    google.protobuf.Timestamp scheduledTime = 5;
 }
 
 message StartNewOrchestrationAction {
@@ -531,6 +528,7 @@ service TaskHubSidecarService {
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
+    rpc CompleteEntityTask(EntityBatchResult) returns (CompleteTaskResponse);
 
     // Deletes and Creates the necessary resources for the orchestration service and the instance store
     rpc CreateTaskHub(CreateTaskHubRequest) returns (CreateTaskHubResponse);
