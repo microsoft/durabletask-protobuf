@@ -444,10 +444,9 @@ message CleanEntityStorageResponse
 }
 
 message EntityBatchRequest {
-    string workItemId = 1;
-    string instanceId = 2;
-    google.protobuf.StringValue entityState = 3;
-    repeated OperationRequest requests = 4;
+    string instanceId = 1;
+    google.protobuf.StringValue entityState = 2;
+    repeated OperationRequest operations = 3;
 }
 
 message EntityBackendProperties
@@ -457,10 +456,9 @@ message EntityBackendProperties
 }
 
 message EntityBatchResult {
-    string workItemId = 1;
-    repeated OperationResult results = 2;
-    repeated OperationAction actions = 3;
-    google.protobuf.StringValue entityState = 4;
+    repeated OperationResult results = 1;
+    repeated OperationAction actions = 2;
+    google.protobuf.StringValue entityState = 3;
 }
 
 message OperationRequest {
