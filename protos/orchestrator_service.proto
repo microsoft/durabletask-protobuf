@@ -409,8 +409,9 @@ message EntityQuery
     bool hasLastModifiedTo = 4;
     google.protobuf.Timestamp lastModifiedTo = 5;
     bool includeState = 6;
-    int32 pageSize = 7;
-    google.protobuf.StringValue continuationToken = 8;
+    bool hasPageSize = 7;
+    int32 pageSize = 8;
+    google.protobuf.StringValue continuationToken = 9;
 }
 
 message QueryEntitiesRequest
@@ -428,7 +429,7 @@ message EntityMetadata
 {
     string instanceId = 1;
     google.protobuf.Timestamp lastModifiedTime = 2;
-    google.protobuf.StringValue serializedState = 3;
+    string serializedState = 3;
 }
 
 message CleanEntityStorageRequest
