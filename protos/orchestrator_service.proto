@@ -404,14 +404,11 @@ message GetEntityResponse
 message EntityQuery
 {
     google.protobuf.StringValue instanceIdStartsWith = 1;
-    bool hasLastModifiedFrom = 2;
-    google.protobuf.Timestamp lastModifiedFrom = 3;
-    bool hasLastModifiedTo = 4;
-    google.protobuf.Timestamp lastModifiedTo = 5;
-    bool includeState = 6;
-    bool hasPageSize = 7;
-    int32 pageSize = 8;
-    google.protobuf.StringValue continuationToken = 9;
+    google.protobuf.Timestamp lastModifiedFrom = 2;
+    google.protobuf.Timestamp lastModifiedTo = 3;
+    bool includeState = 4;
+    int32 pageSize = 5;
+    google.protobuf.StringValue continuationToken = 6;
 }
 
 message QueryEntitiesRequest
