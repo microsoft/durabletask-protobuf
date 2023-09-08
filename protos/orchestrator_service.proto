@@ -430,14 +430,16 @@ message EntityMetadata
 
 message CleanEntityStorageRequest
 {
-    bool removeEmptyEntities = 1;
-    bool releaseOrphanedLocks = 2;
+    string continuationToken = 1;
+    bool removeEmptyEntities = 2;
+    bool releaseOrphanedLocks = 3;
 }
 
 message CleanEntityStorageResponse
 {
-    int32 emptyEntitiesRemoved = 1;
-    int32 orphanedLocksReleased = 2;
+    string continuationToken = 1;
+    int32 emptyEntitiesRemoved = 2;
+    int32 orphanedLocksReleased = 3;
 }
 
 message EntityBatchRequest {
