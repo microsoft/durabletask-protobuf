@@ -385,6 +385,133 @@ message DeleteTaskHubResponse {
     //no playload
 }
 
+message SignalEntityRequest {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue input = 3;
+    string requestId = 4;
+    google.protobuf.Timestamp scheduledTime = 5;
+}
+
+message SignalEntityResponse {
+     // no payload
+}
+
+message GetEntityRequest
+{
+    string instanceId = 1;
+    bool includeState = 2;
+}
+
+message GetEntityResponse
+{
+    bool exists = 1;
+    EntityMetadata entity = 2;
+}
+
+message EntityQuery
+{
+    google.protobuf.StringValue instanceIdStartsWith = 1;
+    google.protobuf.Timestamp lastModifiedFrom = 2;
+    google.protobuf.Timestamp lastModifiedTo = 3;
+    bool includeState = 4;
+    google.protobuf.Int32Value pageSize = 5;
+    google.protobuf.StringValue continuationToken = 6;
+}
+
+message QueryEntitiesRequest
+{
+    EntityQuery query = 1;
+}
+
+message QueryEntitiesResponse
+{
+    repeated EntityMetadata entities = 1;
+    google.protobuf.StringValue continuationToken = 2;
+}
+
+message EntityMetadata
+{
+    string instanceId = 1;
+    google.protobuf.Timestamp lastModifiedTime = 2;
+    string serializedState = 3;
+}
+
+message CleanEntityStorageRequest
+{
+    string continuationToken = 1;
+    bool removeEmptyEntities = 2;
+    bool releaseOrphanedLocks = 3;
+}
+
+message CleanEntityStorageResponse
+{
+    string continuationToken = 1;
+    int32 emptyEntitiesRemoved = 2;
+    int32 orphanedLocksReleased = 3;
+}
+
+message EntityBatchRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue entityState = 2;
+    repeated OperationRequest operations = 3;
+}
+
+message EntityBackendProperties
+{
+    int64 entityMessageReorderWindow = 1;
+    int64 maximumSignalDelayTime = 2;
+}
+
+message EntityBatchResult {
+    repeated OperationResult results = 1;
+    repeated OperationAction actions = 2;
+    google.protobuf.StringValue entityState = 3;
+}
+
+message OperationRequest {
+    string operation = 1;
+    string requestId = 2;
+    google.protobuf.StringValue input = 3;
+}
+
+message OperationResult {
+    oneof resultType {
+        OperationResultSuccess success = 1;
+        OperationResultFailure failure = 2;
+    }
+}
+
+message OperationResultSuccess {
+    google.protobuf.StringValue result = 1;
+}
+
+message OperationResultFailure {
+    TaskFailureDetails failureDetails = 1;
+}
+
+message OperationAction {
+    int32 id = 1;
+    oneof operationActionType {
+        SendSignalAction sendSignal = 2;
+        StartNewOrchestrationAction startNewOrchestration = 3;
+    }
+}
+
+message SendSignalAction {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue input = 3;
+    google.protobuf.Timestamp scheduledTime = 4;
+}
+
+message StartNewOrchestrationAction {
+    string instanceId = 1;
+    string name = 2;
+    google.protobuf.StringValue version = 3;
+    google.protobuf.StringValue input = 4;
+}
+
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -424,12 +551,25 @@ service TaskHubSidecarService {
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
+    rpc CompleteEntityTask(EntityBatchResult) returns (CompleteTaskResponse);
 
     // Deletes and Creates the necessary resources for the orchestration service and the instance store
     rpc CreateTaskHub(CreateTaskHubRequest) returns (CreateTaskHubResponse);
 
     // Deletes the resources for the orchestration service and optionally the instance store
     rpc DeleteTaskHub(DeleteTaskHubRequest) returns (DeleteTaskHubResponse);
+
+    // sends a signal to an entity
+    rpc SignalEntity(SignalEntityRequest) returns (SignalEntityResponse);
+
+    // get information about a specific entity
+    rpc GetEntity(GetEntityRequest) returns (GetEntityResponse);
+
+    // query entities
+    rpc QueryEntities(QueryEntitiesRequest) returns (QueryEntitiesResponse);
+
+    // clean entity storage
+    rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
 }
 
 message GetWorkItemsRequest {
@@ -440,6 +580,7 @@ message WorkItem {
     oneof request {
         OrchestratorRequest orchestratorRequest = 1;
         ActivityRequest activityRequest = 2;
+        EntityBatchRequest entityRequest = 3;
     }
 }
 
