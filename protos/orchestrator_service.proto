@@ -380,7 +380,7 @@ message SignalEntityRequest {
     string instanceId = 1;
     string name = 2;
     google.protobuf.StringValue input = 3;
-    bytes requestId = 4;
+    string requestId = 4;
     google.protobuf.Timestamp scheduledTime = 5;
 }
 
@@ -462,7 +462,7 @@ message EntityBatchResult {
 
 message OperationRequest {
     string operation = 1;
-    bytes requestId = 2;
+    string requestId = 2;
     google.protobuf.StringValue input = 3;
 }
 
