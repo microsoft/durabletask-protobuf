@@ -493,8 +493,7 @@ message SendSignalAction {
     string instanceId = 1;
     string name = 2;
     google.protobuf.StringValue input = 3;
-    bool hasScheduledTime = 4;
-    google.protobuf.Timestamp scheduledTime = 5;
+    google.protobuf.Timestamp scheduledTime = 4;
 }
 
 message StartNewOrchestrationAction {
