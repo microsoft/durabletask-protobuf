@@ -467,9 +467,18 @@ message OperationRequest {
 }
 
 message OperationResult {
+    oneof resultType {
+        OperationResultSuccess success = 1;
+        OperationResultFailure failure = 2;
+    }
+}
+
+message OperationResultSuccess {
     google.protobuf.StringValue result = 1;
-    google.protobuf.StringValue errorCategory = 2;
-    TaskFailureDetails failureDetails = 3;
+}
+
+message OperationResultFailure {
+    TaskFailureDetails failureDetails = 1;
 }
 
 message OperationAction {
