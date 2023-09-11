@@ -406,7 +406,7 @@ message EntityQuery
     google.protobuf.Timestamp lastModifiedFrom = 2;
     google.protobuf.Timestamp lastModifiedTo = 3;
     bool includeState = 4;
-    int32 pageSize = 5;
+    google.protobuf.Int32Value pageSize = 5;
     google.protobuf.StringValue continuationToken = 6;
 }
 
