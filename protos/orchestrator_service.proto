@@ -434,7 +434,7 @@ message EntityMetadata
 {
     string instanceId = 1;
     google.protobuf.Timestamp lastModifiedTime = 2;
-    string serializedState = 3;
+    google.protobuf.StringValue serializedState = 3;
 }
 
 message CleanEntityStorageRequest
@@ -467,6 +467,7 @@ message EntityBatchResult {
     repeated OperationResult results = 1;
     repeated OperationAction actions = 2;
     google.protobuf.StringValue entityState = 3;
+    TaskFailureDetails failureDetails = 4;
 }
 
 message OperationRequest {
