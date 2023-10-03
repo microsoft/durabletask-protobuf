@@ -441,14 +441,14 @@ message EntityMetadata
 
 message CleanEntityStorageRequest
 {
-    string continuationToken = 1;
+    google.protobuf.StringValue continuationToken = 1;
     bool removeEmptyEntities = 2;
     bool releaseOrphanedLocks = 3;
 }
 
 message CleanEntityStorageResponse
 {
-    string continuationToken = 1;
+    google.protobuf.StringValue continuationToken = 1;
     int32 emptyEntitiesRemoved = 2;
     int32 orphanedLocksReleased = 3;
 }
