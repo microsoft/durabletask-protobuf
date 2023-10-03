@@ -512,6 +512,7 @@ message StartNewOrchestrationAction {
     string name = 2;
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
+    google.protobuf.Timestamp scheduledTime = 5;
 }
 
 service TaskHubSidecarService {
