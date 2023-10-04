@@ -417,8 +417,9 @@ message EntityQuery
     google.protobuf.Timestamp lastModifiedFrom = 2;
     google.protobuf.Timestamp lastModifiedTo = 3;
     bool includeState = 4;
-    google.protobuf.Int32Value pageSize = 5;
-    google.protobuf.StringValue continuationToken = 6;
+    bool includeStateless = 5;
+    google.protobuf.Int32Value pageSize = 6;
+    google.protobuf.StringValue continuationToken = 7;
 }
 
 message QueryEntitiesRequest
@@ -436,7 +437,9 @@ message EntityMetadata
 {
     string instanceId = 1;
     google.protobuf.Timestamp lastModifiedTime = 2;
-    google.protobuf.StringValue serializedState = 3;
+    int32 backlogQueueSize = 3;
+    google.protobuf.StringValue lockedBy = 4;
+    google.protobuf.StringValue serializedState = 5;
 }
 
 message CleanEntityStorageRequest
