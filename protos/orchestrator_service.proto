@@ -8,6 +8,7 @@ option java_package = "com.microsoft.durabletask.implementation.protobuf";
 option go_package = "/internal/protos";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
 
@@ -241,6 +242,7 @@ message OrchestratorRequest {
     google.protobuf.StringValue executionId = 2;
     repeated HistoryEvent pastEvents = 3;
     repeated HistoryEvent newEvents = 4;
+    OrchestratorEntityParameters entityParameters = 5;
 }
 
 message OrchestratorResponse {
@@ -415,8 +417,9 @@ message EntityQuery
     google.protobuf.Timestamp lastModifiedFrom = 2;
     google.protobuf.Timestamp lastModifiedTo = 3;
     bool includeState = 4;
-    google.protobuf.Int32Value pageSize = 5;
-    google.protobuf.StringValue continuationToken = 6;
+    bool includeStateless = 5;
+    google.protobuf.Int32Value pageSize = 6;
+    google.protobuf.StringValue continuationToken = 7;
 }
 
 message QueryEntitiesRequest
@@ -434,33 +437,34 @@ message EntityMetadata
 {
     string instanceId = 1;
     google.protobuf.Timestamp lastModifiedTime = 2;
-    google.protobuf.StringValue serializedState = 3;
+    int32 backlogQueueSize = 3;
+    google.protobuf.StringValue lockedBy = 4;
+    google.protobuf.StringValue serializedState = 5;
 }
 
 message CleanEntityStorageRequest
 {
-    string continuationToken = 1;
+    google.protobuf.StringValue continuationToken = 1;
     bool removeEmptyEntities = 2;
     bool releaseOrphanedLocks = 3;
 }
 
 message CleanEntityStorageResponse
 {
-    string continuationToken = 1;
+    google.protobuf.StringValue continuationToken = 1;
     int32 emptyEntitiesRemoved = 2;
     int32 orphanedLocksReleased = 3;
+}
+
+message OrchestratorEntityParameters
+{
+    google.protobuf.Duration entityMessageReorderWindow = 1;
 }
 
 message EntityBatchRequest {
     string instanceId = 1;
     google.protobuf.StringValue entityState = 2;
     repeated OperationRequest operations = 3;
-}
-
-message EntityBackendProperties
-{
-    int64 entityMessageReorderWindow = 1;
-    int64 maximumSignalDelayTime = 2;
 }
 
 message EntityBatchResult {
@@ -511,6 +515,7 @@ message StartNewOrchestrationAction {
     string name = 2;
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
+    google.protobuf.Timestamp scheduledTime = 5;
 }
 
 service TaskHubSidecarService {
