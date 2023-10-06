@@ -417,7 +417,7 @@ message EntityQuery
     google.protobuf.Timestamp lastModifiedFrom = 2;
     google.protobuf.Timestamp lastModifiedTo = 3;
     bool includeState = 4;
-    bool includeStateless = 5;
+    bool includeTransient = 5;
     google.protobuf.Int32Value pageSize = 6;
     google.protobuf.StringValue continuationToken = 7;
 }
