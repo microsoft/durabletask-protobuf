@@ -127,7 +127,6 @@ message TimerCreatedEvent {
 message TimerFiredEvent {
     google.protobuf.Timestamp fireAt = 1;
     int32 timerId = 2;
-    TraceContext parentTraceContext = 3;
 }
 
 message OrchestratorStartedEvent {
