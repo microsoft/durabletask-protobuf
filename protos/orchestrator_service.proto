@@ -59,8 +59,8 @@ message ParentInstanceInfo {
 }
 
 message TraceContext {
-    string traceID = 1;
-    string spanID = 2;
+    string traceParent = 1;
+    string spanID = 2 [deprecated=true];
     google.protobuf.StringValue traceState = 3;
 }
 
