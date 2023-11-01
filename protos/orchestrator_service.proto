@@ -150,7 +150,7 @@ message EventRaisedEvent {
 }
 
 message GenericEvent {
-    string data = 1;
+    google.protobuf.StringValue data = 1;
 }
 
 message HistoryStateEvent {
