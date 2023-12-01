@@ -275,7 +275,7 @@ message CreateInstanceOption {
 }
 
 enum CreateOrchestrationAction {
-    THROW = 0;
+    ERROR = 0;
     SKIP = 1;
     TERMINATE = 2;
 }
