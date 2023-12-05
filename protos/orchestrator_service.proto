@@ -266,10 +266,10 @@ message CreateInstanceRequest {
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
     google.protobuf.Timestamp scheduledStartTimestamp = 5;
-    CreateInstanceOption createInstanceOption = 6;
+    OrchestrationIdReusePolicy orchestrationIdReusePolicy = 6;
 }
 
-message CreateInstanceOption {
+message OrchestrationIdReusePolicy {
     repeated OrchestrationStatus operationStatus = 1;
     CreateOrchestrationAction action = 2;
 }
