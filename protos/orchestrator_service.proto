@@ -276,7 +276,7 @@ message OrchestrationIdReusePolicy {
 
 enum CreateOrchestrationAction {
     ERROR = 0;
-    SKIP = 1;
+    IGNORE = 1;
     TERMINATE = 2;
 }
 
