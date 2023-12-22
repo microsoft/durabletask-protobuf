@@ -380,6 +380,7 @@ message PurgeInstancesRequest {
         string instanceId = 1;
         PurgeInstanceFilter purgeInstanceFilter = 2;
     }
+    bool recursive = 3;
 }
 
 message PurgeInstanceFilter {
