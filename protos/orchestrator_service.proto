@@ -23,6 +23,7 @@ message ActivityRequest {
     google.protobuf.StringValue input = 3;
     OrchestrationInstance orchestrationInstance = 4;
     int32 taskId = 5;
+    TraceContext parentTraceContext = 6;
 }
 
 message ActivityResponse {
