@@ -3,6 +3,8 @@
 
 syntax = "proto3";
 
+package microsoft.durabletask.implementation.protobuf;
+
 option csharp_namespace = "Microsoft.DurableTask.Protobuf";
 option java_package = "com.microsoft.durabletask.implementation.protobuf";
 option go_package = "/internal/protos";
@@ -555,16 +557,16 @@ service TaskHubSidecarService {
 
     // Waits for an orchestration instance to reach a running or completion state.
     rpc WaitForInstanceStart(GetInstanceRequest) returns (GetInstanceResponse);
-    
+
     // Waits for an orchestration instance to reach a completion state (completed, failed, terminated, etc.).
     rpc WaitForInstanceCompletion(GetInstanceRequest) returns (GetInstanceResponse);
 
     // Raises an event to a running orchestration instance.
     rpc RaiseEvent(RaiseEventRequest) returns (RaiseEventResponse);
-    
+
     // Terminates a running orchestration instance.
     rpc TerminateInstance(TerminateRequest) returns (TerminateResponse);
-    
+
     // Suspends a running orchestration instance.
     rpc SuspendInstance(SuspendRequest) returns (SuspendResponse);
 
