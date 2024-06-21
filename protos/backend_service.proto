@@ -106,7 +106,7 @@ message CompleteOrchestrationWorkItemRequest {
     OrchestrationInstance instance = 2;
     OrchestrationStatus runtimeStatus = 3;
     google.protobuf.StringValue customStatus = 4;
-	repeated HistoryEvent newHistory = 5;
+    repeated HistoryEvent newHistory = 5;
     repeated HistoryEvent newTasks = 6;
     repeated HistoryEvent newTimers = 7;
     repeated OrchestratorMessage newMessages = 8;
@@ -117,7 +117,7 @@ message OrchestratorMessage {
     // The ID of the orchestration instance to receive the message.
     OrchestrationInstance instance = 1;
     // The event payload to be received by the target orchestration.
-	HistoryEvent event = 2;
+    HistoryEvent event = 2;
 }
 
 // Request payload for abandoning an orchestration work item.
