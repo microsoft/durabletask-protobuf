@@ -1,0 +1,127 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+syntax = "proto3";
+
+package durabletask.protos.backend.v1;
+
+option csharp_namespace = "Microsoft.DurableTask.Protobuf";
+option java_package = "com.microsoft.durabletask.implementation.protobuf";
+option go_package = "/internal/protos";
+
+import "orchestrator_service.proto";
+
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
+// gRPC service used by Durable Task Framework (DTFx) backend implementations.
+// The RPCs in this service are used by DTFx clients to manage orchestrations.
+service ClientBackendService {
+    // Creates a new orchestration instance.
+    rpc CreateOrchestrationInstance (CreateInstanceRequest) returns (CreateInstanceResponse);
+
+    // Sends an event to an orchestration instance. This RPC is used for raising external events to orchestrations
+    // and for sending orchestration lifecycle events, such as terminate, suspend, resume, etc.
+    rpc AddOrchestrationEvent (AddOrchestrationEventRequest) returns (google.protobuf.Empty);
+
+    // Returns metadata about an orchestration instance.
+    rpc GetOrchestrationMetadata (GetInstanceRequest) returns (GetInstanceResponse);
+
+    // Waits for an orchestration to reach a terminal state and then returns metadata for that orchestration.
+    rpc WaitForOrchestrationCompletion(GetInstanceRequest) returns (GetInstanceResponse);
+
+    // Purges the state of one or more orchestration instances.
+    rpc PurgeOrchestrationState (PurgeInstancesRequest) returns (PurgeInstancesResponse);
+
+    // TODO: Additional operations, such as listing orchestrations
+}
+
+// gRPC service used by Durable Task Framework (DTFx) backend implementations.
+// The RPCs in this service are used by the DTFx worker to process orchestration and activity work items.
+service WorkerBackendService {
+    // Starts a bi-directional stream for receiving work items and sending health pings.
+    rpc GetWorkItems(stream GetWorkItemsRequest) returns (stream WorkItem);
+
+    // Gets orchestration runtime state (history, etc.) for a given orchestration instance.
+    rpc GetOrchestrationRuntimeState (GetOrchestrationRuntimeStateRequest) returns (GetOrchestrationRuntimeStateResponse);
+
+    // Completes an outstanding activity work item and adds a new event to the target orchestration's inbox.
+    rpc CompleteActivityWorkItem (CompleteActivityWorkItemRequest) returns (google.protobuf.Empty);
+
+    // Abandons an outstanding activity work item. Abandoned work items will be delivered again after some delay.
+    rpc AbandonActivityWorkItem (AbandonActivityWorkItemRequest) returns (google.protobuf.Empty);
+
+    // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
+    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (google.protobuf.Empty);
+
+    // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
+    rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (google.protobuf.Empty);
+
+    // Fetches metadata about the connected service. This may also be used to verify connectivity.
+    rpc Metadata(google.protobuf.Empty) returns (google.protobuf.Empty); // TODO: Payloads
+}
+
+// Request payload for adding new orchestration events.
+message AddOrchestrationEventRequest {
+    // The ID of the orchestration to send an event to.
+    OrchestrationInstance instance = 1;
+    // The event to send to the orchestration.
+    HistoryEvent event = 2;
+}
+
+// Request parameters for fetching orchestration runtime state.
+message GetOrchestrationRuntimeStateRequest {
+    // The ID of the target orchestration instance.
+    OrchestrationInstance instance = 1;
+}
+
+// Response payload returned when fetching orchestration runtime state.
+message GetOrchestrationRuntimeStateResponse {
+    // The existing history events for the target orchestration instance.
+    repeated HistoryEvent history = 1;
+}
+
+// Request payload for completing an activity work item.
+message CompleteActivityWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+
+    // The response event that will be sent to the orchestrator.
+    // This must be either a TaskCompleted event or a TaskFailed event.
+    HistoryEvent responseEvent = 2;
+}
+
+// Request payload for abandoning an activity work item.
+message AbandonActivityWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+}
+
+// Request payload for completing an orchestration work item.
+message CompleteOrchestrationWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+    OrchestrationInstance instance = 2;
+    OrchestrationStatus runtimeStatus = 3;
+    google.protobuf.StringValue customStatus = 4;
+	repeated HistoryEvent newHistory = 5;
+    repeated HistoryEvent newTasks = 6;
+    repeated HistoryEvent newTimers = 7;
+    repeated OrchestratorMessage newMessages = 8;
+}
+
+// A message to be delivered to an orchestration by the backend.
+message OrchestratorMessage {
+    // The ID of the orchestration instance to receive the message.
+    OrchestrationInstance instance = 1;
+    // The event payload to be received by the target orchestration.
+	HistoryEvent event = 2;
+}
+
+// Request payload for abandoning an orchestration work item.
+message AbandonOrchestrationWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+}
