@@ -17,8 +17,8 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
 
 // gRPC service used by Durable Task Framework (DTFx) backend implementations.
-// The RPCs in this service are used by DTFx clients to manage orchestrations.
-service ClientBackendService {
+// The RPCs in this service are used by DTFx backends to manage orchestration state.
+service BackendService {
     // Creates a new orchestration instance.
     rpc CreateOrchestrationInstance (CreateInstanceRequest) returns (CreateInstanceResponse);
 
@@ -36,13 +36,9 @@ service ClientBackendService {
     rpc PurgeOrchestrationState (PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
     // TODO: Additional operations, such as listing orchestrations
-}
 
-// gRPC service used by Durable Task Framework (DTFx) backend implementations.
-// The RPCs in this service are used by the DTFx worker to process orchestration and activity work items.
-service WorkerBackendService {
-    // Starts a bi-directional stream for receiving work items and sending health pings.
-    rpc GetWorkItems(stream GetWorkItemsRequest) returns (stream WorkItem);
+    // Starts a server stream for receiving work items
+    rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
 
     // Gets orchestration runtime state (history, etc.) for a given orchestration instance.
     rpc GetOrchestrationRuntimeState (GetOrchestrationRuntimeStateRequest) returns (GetOrchestrationRuntimeStateResponse);
@@ -59,8 +55,11 @@ service WorkerBackendService {
     // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (google.protobuf.Empty);
 
-    // Fetches metadata about the connected service. This may also be used to verify connectivity.
+    // Fetches metadata about the connected service.
     rpc Metadata(google.protobuf.Empty) returns (google.protobuf.Empty); // TODO: Payloads
+
+    // Sends a health check ping to the backend service.
+    rpc Ping(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 // Request payload for adding new orchestration events.
