@@ -127,7 +127,7 @@ message AbandonActivityWorkItemResponse {
 message CompleteOrchestrationWorkItemRequest {
     // The completion token that was provided when the work item was fetched.
     string completionToken = 1;
-    OrchestrationInstance instance = 2;
+    google.protobuf.StringValue newExecutionId = 2;
     OrchestrationStatus runtimeStatus = 3;
     google.protobuf.StringValue customStatus = 4;
     repeated HistoryEvent newHistory = 5;
