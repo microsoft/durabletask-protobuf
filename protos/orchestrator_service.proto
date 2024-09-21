@@ -267,6 +267,8 @@ message CreateInstanceRequest {
     google.protobuf.StringValue input = 4;
     google.protobuf.Timestamp scheduledStartTimestamp = 5;
     OrchestrationIdReusePolicy orchestrationIdReusePolicy = 6;
+    google.protobuf.StringValue executionId = 7;
+    map<string, string> tags = 8;
 }
 
 message OrchestrationIdReusePolicy {
@@ -315,6 +317,9 @@ message OrchestrationState {
     google.protobuf.StringValue output = 9;
     google.protobuf.StringValue customStatus = 10;
     TaskFailureDetails failureDetails = 11;
+    google.protobuf.StringValue executionId = 12;
+    google.protobuf.Timestamp completedTimestamp = 13;
+    google.protobuf.StringValue parentInstanceId = 14;
 }
 
 message RaiseEventRequest {
@@ -609,9 +614,15 @@ message WorkItem {
         OrchestratorRequest orchestratorRequest = 1;
         ActivityRequest activityRequest = 2;
         EntityBatchRequest entityRequest = 3;
+        HealthPing healthPing = 4;
     }
+    string completionToken = 10;
 }
 
 message CompleteTaskResponse {
     // No payload
+}
+
+message HealthPing {
+	// No payload
 }

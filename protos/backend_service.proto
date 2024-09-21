@@ -1,0 +1,171 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+syntax = "proto3";
+
+package durabletask.protos.backend.v1;
+
+option csharp_namespace = "Microsoft.DurableTask.Protobuf";
+option java_package = "com.microsoft.durabletask.implementation.protobuf";
+option go_package = "github.com/microsoft/durabletask-protobuf/internal/protos";
+
+import "orchestrator_service.proto";
+
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
+// gRPC service used by Durable Task Framework (DTFx) backend implementations.
+// The RPCs in this service are used by DTFx backends to manage orchestration state.
+service BackendService {
+    // Creates a new orchestration instance.
+    rpc CreateInstance (CreateInstanceRequest) returns (CreateInstanceResponse);
+
+    // Sends an event to an orchestration instance. This RPC is used for raising external events to orchestrations
+    // and for sending orchestration lifecycle events, such as terminate, suspend, resume, etc.
+    rpc AddEvent (AddEventRequest) returns (AddEventResponse);
+
+    // Returns metadata about an orchestration instance.
+    rpc GetInstance (GetInstanceRequest) returns (GetInstanceResponse);
+
+    // Returns metadata about multiple orchestration instances using a query.
+    rpc QueryInstances (QueryInstancesRequest) returns (QueryInstancesResponse);
+
+    // Waits for an orchestration to reach a terminal state and then returns metadata for that orchestration.
+    rpc WaitForInstance (WaitForInstanceRequest) returns (WaitForInstanceResponse);
+
+    // Purges the state of one or more orchestration instances.
+    rpc PurgeInstances (PurgeInstancesRequest) returns (PurgeInstancesResponse);
+
+    // Starts a server stream for receiving work items
+    rpc GetWorkItems (GetWorkItemsRequest) returns (stream WorkItem);
+
+    // Gets orchestration runtime state (history, etc.) for a given orchestration instance.
+    rpc GetOrchestrationRuntimeState (GetOrchestrationRuntimeStateRequest) returns (GetOrchestrationRuntimeStateResponse);
+
+    // Completes an outstanding activity work item and adds a new event to the target orchestration's inbox.
+    rpc CompleteActivityWorkItem (CompleteActivityWorkItemRequest) returns (CompleteActivityWorkItemResponse);
+
+    // Abandons an outstanding activity work item. Abandoned work items will be delivered again after some delay.
+    rpc AbandonActivityWorkItem (AbandonActivityWorkItemRequest) returns (AbandonActivityWorkItemResponse);
+
+    // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
+    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (CompleteOrchestrationWorkItemResponse);
+
+    // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
+    rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (AbandonOrchestrationWorkItemResponse);
+
+    // Sends a health check ping to the backend service.
+    rpc Ping (PingRequest) returns (PingResponse);
+}
+
+// Request payload for adding new orchestration events.
+message AddEventRequest {
+    // The ID of the orchestration to send an event to.
+    OrchestrationInstance instance = 1;
+    // The event to send to the orchestration.
+    HistoryEvent event = 2;
+}
+
+// Response payload for adding new orchestration events.
+message AddEventResponse {
+    // No fields
+}
+
+// Request payload for waiting for instance completion.
+message WaitForInstanceRequest {
+    string instanceId = 1;
+    bool getInputsAndOutputs = 2;
+}
+
+// Response payload for waiting for instance completion.
+message WaitForInstanceResponse {
+    bool exists = 1;
+    OrchestrationState orchestrationState = 2;
+}
+
+// Request parameters for fetching orchestration runtime state.
+message GetOrchestrationRuntimeStateRequest {
+    // The ID of the target orchestration instance.
+    OrchestrationInstance instance = 1;
+}
+
+// Response payload returned when fetching orchestration runtime state.
+message GetOrchestrationRuntimeStateResponse {
+    // The existing history events for the target orchestration instance.
+    repeated HistoryEvent history = 1;
+}
+
+// Request payload for completing an activity work item.
+message CompleteActivityWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+
+    // The response event that will be sent to the orchestrator.
+    // This must be either a TaskCompleted event or a TaskFailed event.
+    HistoryEvent responseEvent = 2;
+}
+
+// Response payload for completing an activity work item.
+message CompleteActivityWorkItemResponse {
+    // No fields
+}
+
+// Request payload for abandoning an activity work item.
+message AbandonActivityWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+}
+
+// Response payload for abandoning an activity work item.
+message AbandonActivityWorkItemResponse {
+	// No fields
+}
+
+// Request payload for completing an orchestration work item.
+message CompleteOrchestrationWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+    google.protobuf.StringValue newExecutionId = 2;
+    OrchestrationStatus runtimeStatus = 3;
+    google.protobuf.StringValue customStatus = 4;
+    repeated HistoryEvent newHistory = 5;
+    repeated HistoryEvent newTasks = 6;
+    repeated HistoryEvent newTimers = 7;
+    repeated OrchestratorMessage newMessages = 8;
+}
+
+// Response payload for completing an orchestration work item.
+message CompleteOrchestrationWorkItemResponse {
+	// No fields
+}
+
+// A message to be delivered to an orchestration by the backend.
+message OrchestratorMessage {
+    // The ID of the orchestration instance to receive the message.
+    OrchestrationInstance instance = 1;
+    // The event payload to be received by the target orchestration.
+    HistoryEvent event = 2;
+}
+
+// Request payload for abandoning an orchestration work item.
+message AbandonOrchestrationWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+}
+
+// Response payload for abandoning an orchestration work item.
+message AbandonOrchestrationWorkItemResponse {
+	// No fields
+}
+
+// Request payload for ping operations.
+message PingRequest {
+	// No fields
+}
+
+// Response payload for ping operations.
+message PingResponse {
+	// No fields
+}
