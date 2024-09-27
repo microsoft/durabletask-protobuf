@@ -199,7 +199,7 @@ message BackendMetrics {
 // Metrics related to work items
 message WorkItemMetrics {
     // Number of work items that are queued and waiting to be processed
-    int32 pending = 1 [json_name="pending"];;
+    int32 pending = 1 [json_name="pending"];
     // Number of work items that are currently being processed
     int32 active = 2 [json_name="active"];
     // Age of the oldest work item in the queue, in seconds
