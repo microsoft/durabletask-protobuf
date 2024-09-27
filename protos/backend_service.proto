@@ -175,13 +175,13 @@ message PingResponse {
 
 // Request payload for fetching backend metrics.
 message GetMetricsRequest {
-	// No fields
+    // No fields
 }
 
 // Response payload for fetching backend metrics
 message GetMetricsResponse {
     // The current metrics for the backend service.
-	BackendMetrics metrics = 1;
+    BackendMetrics metrics = 1;
 }
 
 // Metrics for the backend service.
@@ -209,7 +209,7 @@ message WorkItemMetrics {
 // Metrics related to workers currently connected to the backend
 message ConnectedWorkerMetrics {
     // Number of worker instances that are currently connected to the backend
-	int32 count = 1;
+    int32 count = 1;
     // Total number of orchestrator work items that can be processed concurrently by all connected workers
     int32 totalOrchestratorWorkItemCapacity = 2;
     // Total number of activity work items that can be processed concurrently by all connected workers
