@@ -187,31 +187,31 @@ message GetMetricsResponse {
 // Metrics for the backend service.
 message BackendMetrics {
     // Activity work item metrics
-    WorkItemMetrics activityWorkItems = 1;
+    WorkItemMetrics activityWorkItems = 1 [json_name="activityWorkItems"];
     // Orchestrator work item metrics
-    WorkItemMetrics orchestratorWorkItems = 2;
+    WorkItemMetrics orchestratorWorkItems = 2 [json_name="orchestratorWorkItems"];
     // Entity work item metrics
-    WorkItemMetrics entityWorkItems = 3;
+    WorkItemMetrics entityWorkItems = 3 [json_name="entityWorkItems"];
     // Metrics related to workers currently connected to the backend
-    ConnectedWorkerMetrics connectedWorkers = 4;
+    ConnectedWorkerMetrics connectedWorkers = 4 [json_name="connectedWorkers"];
 }
 
 // Metrics related to work items
 message WorkItemMetrics {
     // Number of work items that are queued and waiting to be processed
-    int32 pending = 1;
+    int32 pending = 1 [json_name="pending"];;
     // Number of work items that are currently being processed
-    int32 active = 2;
+    int32 active = 2 [json_name="active"];
     // Age of the oldest work item in the queue, in seconds
-    int32 oldestAgeInSeconds = 3;
+    int32 oldestAgeInSeconds = 3 [json_name="oldestAgeInSeconds"];
 }
 
 // Metrics related to workers currently connected to the backend
 message ConnectedWorkerMetrics {
     // Number of worker instances that are currently connected to the backend
-    int32 count = 1;
+    int32 count = 1 [json_name="count"];
     // Total number of orchestrator work items that can be processed concurrently by all connected workers
-    int32 totalOrchestratorWorkItemCapacity = 2;
+    int32 totalOrchestratorWorkItemCapacity = 2 [json_name="totalOrchestratorWorkItemCapacity"];
     // Total number of activity work items that can be processed concurrently by all connected workers
-    int32 totalActivityWorkItemCapacity = 3;
+    int32 totalActivityWorkItemCapacity = 3 [json_name="totalActivityWorkItemCapacity"];
 }
