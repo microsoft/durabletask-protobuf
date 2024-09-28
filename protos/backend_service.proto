@@ -210,8 +210,4 @@ message WorkItemMetrics {
 message ConnectedWorkerMetrics {
     // Number of worker instances that are currently connected to the backend
     int32 count = 1 [json_name="count"];
-    // Total number of orchestrator work items that can be processed concurrently by all connected workers
-    int32 totalOrchestratorWorkItemCapacity = 2 [json_name="totalOrchestratorWorkItemCapacity"];
-    // Total number of activity work items that can be processed concurrently by all connected workers
-    int32 totalActivityWorkItemCapacity = 3 [json_name="totalActivityWorkItemCapacity"];
 }
