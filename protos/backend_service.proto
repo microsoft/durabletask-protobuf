@@ -29,14 +29,23 @@ service BackendService {
     // Returns metadata about an orchestration instance.
     rpc GetInstance (GetInstanceRequest) returns (GetInstanceResponse);
 
+    // Returns metadata about an entity instance.
+    rpc GetEntity (GetEntityRequest) returns (GetEntityResponse);
+
     // Returns metadata about multiple orchestration instances using a query.
     rpc QueryInstances (QueryInstancesRequest) returns (QueryInstancesResponse);
+
+    // Returns metadata for multiple entities using a query.
+    rpc QueryEntities(QueryEntitiesRequest) returns (QueryEntitiesResponse);
 
     // Waits for an orchestration to reach a terminal state and then returns metadata for that orchestration.
     rpc WaitForInstance (WaitForInstanceRequest) returns (WaitForInstanceResponse);
 
     // Purges the state of one or more orchestration instances.
     rpc PurgeInstances (PurgeInstancesRequest) returns (PurgeInstancesResponse);
+
+    // Cleans entity storage.
+    rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
 
     // Starts a server stream for receiving work items
     rpc GetWorkItems (GetWorkItemsRequest) returns (stream WorkItem);

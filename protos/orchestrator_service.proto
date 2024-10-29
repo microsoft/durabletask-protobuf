@@ -427,20 +427,17 @@ message SignalEntityResponse {
      // no payload
 }
 
-message GetEntityRequest
-{
+message GetEntityRequest {
     string instanceId = 1;
     bool includeState = 2;
 }
 
-message GetEntityResponse
-{
+message GetEntityResponse {
     bool exists = 1;
     EntityMetadata entity = 2;
 }
 
-message EntityQuery
-{
+message EntityQuery {
     google.protobuf.StringValue instanceIdStartsWith = 1;
     google.protobuf.Timestamp lastModifiedFrom = 2;
     google.protobuf.Timestamp lastModifiedTo = 3;
@@ -450,19 +447,16 @@ message EntityQuery
     google.protobuf.StringValue continuationToken = 7;
 }
 
-message QueryEntitiesRequest
-{
+message QueryEntitiesRequest {
     EntityQuery query = 1;
 }
 
-message QueryEntitiesResponse
-{
+message QueryEntitiesResponse {
     repeated EntityMetadata entities = 1;
     google.protobuf.StringValue continuationToken = 2;
 }
 
-message EntityMetadata
-{
+message EntityMetadata {
     string instanceId = 1;
     google.protobuf.Timestamp lastModifiedTime = 2;
     int32 backlogQueueSize = 3;
@@ -470,22 +464,19 @@ message EntityMetadata
     google.protobuf.StringValue serializedState = 5;
 }
 
-message CleanEntityStorageRequest
-{
+message CleanEntityStorageRequest {
     google.protobuf.StringValue continuationToken = 1;
     bool removeEmptyEntities = 2;
     bool releaseOrphanedLocks = 3;
 }
 
-message CleanEntityStorageResponse
-{
+message CleanEntityStorageResponse {
     google.protobuf.StringValue continuationToken = 1;
     int32 emptyEntitiesRemoved = 2;
     int32 orphanedLocksReleased = 3;
 }
 
-message OrchestratorEntityParameters
-{
+message OrchestratorEntityParameters {
     google.protobuf.Duration entityMessageReorderWindow = 1;
 }
 
