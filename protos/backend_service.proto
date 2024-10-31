@@ -67,6 +67,9 @@ service BackendService {
 
     // Sends a health check ping to the backend service.
     rpc Ping (PingRequest) returns (PingResponse);
+
+    // Returns the current metrics for the backend service.
+    rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
 }
 
 // Request payload for adding new orchestration events.
@@ -136,7 +139,7 @@ message AbandonActivityWorkItemResponse {
 message CompleteOrchestrationWorkItemRequest {
     // The completion token that was provided when the work item was fetched.
     string completionToken = 1;
-    google.protobuf.StringValue newExecutionId = 2;
+    OrchestrationInstance instance = 2;
     OrchestrationStatus runtimeStatus = 3;
     google.protobuf.StringValue customStatus = 4;
     repeated HistoryEvent newHistory = 5;
@@ -177,4 +180,43 @@ message PingRequest {
 // Response payload for ping operations.
 message PingResponse {
 	// No fields
+}
+
+// Request payload for fetching backend metrics.
+message GetMetricsRequest {
+    // No fields
+}
+
+// Response payload for fetching backend metrics
+message GetMetricsResponse {
+    // The current metrics for the backend service.
+    BackendMetrics metrics = 1;
+}
+
+// Metrics for the backend service.
+message BackendMetrics {
+    // Activity work item metrics
+    WorkItemMetrics activityWorkItems = 1 [json_name="activityWorkItems"];
+    // Orchestrator work item metrics
+    WorkItemMetrics orchestratorWorkItems = 2 [json_name="orchestratorWorkItems"];
+    // Entity work item metrics
+    WorkItemMetrics entityWorkItems = 3 [json_name="entityWorkItems"];
+    // Metrics related to workers currently connected to the backend
+    ConnectedWorkerMetrics connectedWorkers = 4 [json_name="connectedWorkers"];
+}
+
+// Metrics related to work items
+message WorkItemMetrics {
+    // Number of work items that are queued and waiting to be processed
+    int32 pending = 1 [json_name="pending"];
+    // Number of work items that are currently being processed
+    int32 active = 2 [json_name="active"];
+    // Age of the oldest work item in the queue, in seconds
+    int32 oldestAgeInSeconds = 3 [json_name="oldestAgeInSeconds"];
+}
+
+// Metrics related to workers currently connected to the backend
+message ConnectedWorkerMetrics {
+    // Number of worker instances that are currently connected to the backend
+    int32 count = 1 [json_name="count"];
 }
