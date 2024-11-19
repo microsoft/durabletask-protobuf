@@ -48,7 +48,7 @@ service BackendService {
     rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
 
     // Starts a server stream for receiving work items
-    rpc GetWorkItems (GetWorkItemsRequest) returns (stream WorkItem);
+    rpc GetWorkItems (GetBackendWorkItemsRequest) returns (stream BackendWorkItem);
 
     // Gets orchestration runtime state (history, etc.) for a given orchestration instance.
     rpc GetOrchestrationRuntimeState (GetOrchestrationRuntimeStateRequest) returns (GetOrchestrationRuntimeStateResponse);
@@ -65,11 +65,39 @@ service BackendService {
     // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (AbandonOrchestrationWorkItemResponse);
 
+    // Completes an outstanding entity work item.
+    rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (CompleteEntityWorkItemResponse);
+
+    // Abandons an outstanding entity work item. Abandoned work items will be delivered again after some delay.
+    rpc AbandonEntityWorkItem (AbandonEntityWorkItemRequest) returns (AbandonEntityWorkItemResponse);
+
     // Sends a health check ping to the backend service.
     rpc Ping (PingRequest) returns (PingResponse);
 
     // Returns the current metrics for the backend service.
     rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
+}
+
+message GetBackendWorkItemsRequest {
+    int32 MaxEntityOperationBatchSize = 1;
+}
+
+message BackendWorkItem {
+    oneof request {
+        OrchestratorRequest orchestratorRequest = 1;
+        ActivityRequest activityRequest = 2;
+        EntityRequest entityRequest = 3;
+        HealthPing healthPing = 4;
+    }
+    string completionToken = 10;
+}
+
+message EntityRequest
+{
+    string instanceId = 1;
+    string executionId = 2;
+    google.protobuf.StringValue entityState = 3; // null if entity does not exist
+    repeated HistoryEvent operationRequests = 4;
 }
 
 // Request payload for adding new orchestration events.
@@ -169,6 +197,44 @@ message AbandonOrchestrationWorkItemRequest {
 
 // Response payload for abandoning an orchestration work item.
 message AbandonOrchestrationWorkItemResponse {
+	// No fields
+}
+
+// Request payload for completing an entity work item.
+message CompleteEntityWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+
+    // The execution id of the scheduler.
+    string executionId = 2;
+
+    // The number of requests that were executed.
+    // If this is smaller than the number of operations in the work item,
+    // any left-over operations will be sent again with the next work item.
+    int32 numberOperationsExecuted = 3;
+
+    // The state of the entity after the executed operations, or null if none
+    google.protobuf.StringValue entityState = 4;
+
+    // The messages that were sent by the executed operations. This must
+    // include any responses to the operation calls.
+    repeated OrchestratorMessage messages = 5;
+}
+
+// Response payload for completing an entity work item.
+message CompleteEntityWorkItemResponse {
+    // No fields
+}
+
+// Request payload for abandoning an entity work item.
+message AbandonEntityWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;   
+    string reason = 2;
+}
+
+// Response payload for abandoning an entity work item.
+message AbandonEntityWorkItemResponse {
 	// No fields
 }
 
