@@ -170,8 +170,7 @@ message ExecutionResumedEvent {
     google.protobuf.StringValue input = 1;
 }
 
-message EntityOperationSignaledEvent
-{
+message EntityOperationSignaledEvent {
     string requestId = 1;
     string operation = 2;
     google.protobuf.Timestamp scheduledTime = 3;
@@ -179,8 +178,7 @@ message EntityOperationSignaledEvent
     google.protobuf.StringValue targetInstanceId = 5; // used only within histories, null in messages
 }
 
-message EntityOperationCalledEvent
-{
+message EntityOperationCalledEvent {
     string requestId = 1;
     string operation = 2;
     google.protobuf.Timestamp scheduledTime = 3;
@@ -190,35 +188,30 @@ message EntityOperationCalledEvent
     google.protobuf.StringValue targetInstanceId = 7; // used only within histories, null in messages
 }
 
-message EntityLockRequestedEvent
-{
+message EntityLockRequestedEvent {
     string criticalSectionId = 1;  
     repeated string lockSet = 2;
     int32 position = 3;
     google.protobuf.StringValue parentInstanceId = 4; // used only within messages, null in histories 
 }
 
-message EntityOperationCompletedEvent
-{
+message EntityOperationCompletedEvent {
     string requestId = 1;
     google.protobuf.StringValue output = 2;
 }
 
-message EntityOperationFailedEvent
-{
+message EntityOperationFailedEvent {
     string requestId = 1;
     TaskFailureDetails failureDetails = 2;
 }
 
-message EntityUnlockSentEvent
-{
+message EntityUnlockSentEvent {
     string criticalSectionId = 1;
     google.protobuf.StringValue parentInstanceId = 2;  // used only within messages, null in histories 
     google.protobuf.StringValue targetInstanceId = 3;  // used only within histories, null in messages
 }
 
-message EntityLockGrantedEvent
-{
+message EntityLockGrantedEvent {
     string criticalSectionId = 1;
 }
  
@@ -552,6 +545,13 @@ message EntityBatchResult {
     TaskFailureDetails failureDetails = 4;
 }
 
+message EntityRequest {
+    string instanceId = 1;
+    string executionId = 2;
+    google.protobuf.StringValue entityState = 3; // null if entity does not exist
+    repeated HistoryEvent operationRequests = 4;
+}
+
 message OperationRequest {
     string operation = 1;
     string requestId = 2;
@@ -657,15 +657,16 @@ service TaskHubSidecarService {
 }
 
 message GetWorkItemsRequest {
-    // No parameters currently
+    int32 maxEntityOperationBatchSize = 1;
 }
 
 message WorkItem {
     oneof request {
         OrchestratorRequest orchestratorRequest = 1;
         ActivityRequest activityRequest = 2;
-        EntityBatchRequest entityRequest = 3;
+        EntityBatchRequest entityRequest = 3; // (older) used by orchestration services implementations
         HealthPing healthPing = 4;
+        EntityRequest entityRequestV2 = 5; // (newer) used by backend service implementations
     }
     string completionToken = 10;
 }
