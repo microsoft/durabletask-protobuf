@@ -607,7 +607,8 @@ service TaskHubSidecarService {
 }
 
 message GetWorkItemsRequest {
-    // No parameters currently
+    int32 maxConcurrentOrchestrationWorkItems = 1;
+    int32 maxConcurrentActivityWorkItems = 2;
 }
 
 message WorkItem {
