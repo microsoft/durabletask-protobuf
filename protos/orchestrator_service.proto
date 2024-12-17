@@ -270,6 +270,7 @@ message CreateInstanceRequest {
     OrchestrationIdReusePolicy orchestrationIdReusePolicy = 6;
     google.protobuf.StringValue executionId = 7;
     map<string, string> tags = 8;
+    TraceContext parentTraceContext = 9;
 }
 
 message OrchestrationIdReusePolicy {
