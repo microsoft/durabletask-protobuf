@@ -31,6 +31,7 @@ message ActivityResponse {
     int32 taskId = 2;
     google.protobuf.StringValue result = 3;
     TaskFailureDetails failureDetails = 4;
+    string completionToken = 5;
 }
 
 message TaskFailureDetails {
@@ -311,6 +312,7 @@ message OrchestratorResponse {
     string instanceId = 1;
     repeated OrchestratorAction actions = 2;
     google.protobuf.StringValue customStatus = 3;
+    string completionToken = 4;
 }
 
 message CreateInstanceRequest {
@@ -657,7 +659,9 @@ service TaskHubSidecarService {
 }
 
 message GetWorkItemsRequest {
-    int32 maxEntityOperationBatchSize = 1;
+    int32 maxConcurrentOrchestrationWorkItems = 1;
+    int32 maxConcurrentActivityWorkItems = 2;
+    int32 maxConcurrentEntityWorkItems = 3;
 }
 
 message WorkItem {
