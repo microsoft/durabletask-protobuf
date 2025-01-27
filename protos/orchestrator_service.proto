@@ -306,6 +306,7 @@ message OrchestratorRequest {
     repeated HistoryEvent pastEvents = 3;
     repeated HistoryEvent newEvents = 4;
     OrchestratorEntityParameters entityParameters = 5;
+    bool requiresHistoryStreaming = 6;
 }
 
 message OrchestratorResponse {
@@ -313,6 +314,10 @@ message OrchestratorResponse {
     repeated OrchestratorAction actions = 2;
     google.protobuf.StringValue customStatus = 3;
     string completionToken = 4;
+
+    // The number of work item events that were processed by the orchestrator.
+    // This field is optional. If not set, the service should assume that the orchestrator processed all events.
+    google.protobuf.Int32Value numEventsProcessed = 5;
 }
 
 message CreateInstanceRequest {
@@ -639,6 +644,9 @@ service TaskHubSidecarService {
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
     rpc CompleteEntityTask(EntityBatchResult) returns (CompleteTaskResponse);
 
+    // Gets the history of an orchestration instance as a stream of events.
+    rpc StreamInstanceHistory(StreamInstanceHistoryRequest) returns (stream HistoryChunk);
+
     // Deletes and Creates the necessary resources for the orchestration service and the instance store
     rpc CreateTaskHub(CreateTaskHubRequest) returns (CreateTaskHubResponse);
 
@@ -662,6 +670,7 @@ message GetWorkItemsRequest {
     int32 maxConcurrentOrchestrationWorkItems = 1;
     int32 maxConcurrentActivityWorkItems = 2;
     int32 maxConcurrentEntityWorkItems = 3;
+    bool supportsHistoryStreaming = 4;
 }
 
 message WorkItem {
@@ -681,4 +690,16 @@ message CompleteTaskResponse {
 
 message HealthPing {
 	// No payload
+}
+
+message StreamInstanceHistoryRequest {
+    string instanceId = 1;
+    google.protobuf.StringValue executionId = 2;
+
+    // When set to true, the service may return a more optimized response suitable for workers.
+    bool forWorkItemProcessing = 3;
+}
+
+message HistoryChunk {
+    repeated HistoryEvent events = 1;
 }
