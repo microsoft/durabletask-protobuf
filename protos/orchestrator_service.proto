@@ -720,13 +720,9 @@ message HistoryChunk {
 
 message WorkerMetrics
 {
-    google.protobuf.Duration interval = 1;
-    WorkerWorkItemMetrics orchestrationMetrics = 2;
-    WorkerWorkItemMetrics activityMetrics = 3;
-    WorkerWorkItemMetrics entityMetrics = 4;
-}
-
-message WorkerWorkItemMetrics
-{
-    double averageConcurrency = 1;
+    google.protobuf.Timestamp timestamp = 1;
+    google.protobuf.Duration interval = 2;
+    double averageOrchestrationConcurrency = 3;
+    double averageActivityConcurrency = 4;
+    double averageEntityConcurrency = 5;
 }
