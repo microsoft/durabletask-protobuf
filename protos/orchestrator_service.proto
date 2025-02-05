@@ -664,6 +664,9 @@ service TaskHubSidecarService {
 
     // clean entity storage
     rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
+
+    // send worker metrics to the backend, where they can be aggregated, and used for dynamic adaptations
+    rpc ReportWorkerMetrics(WorkerMetrics) returns (google.protobuf.Empty);
 }
 
 message GetWorkItemsRequest {
@@ -713,4 +716,17 @@ message StreamInstanceHistoryRequest {
 
 message HistoryChunk {
     repeated HistoryEvent events = 1;
+}
+
+message WorkerMetrics
+{
+    google.protobuf.Duration interval = 1;
+    WorkerWorkItemMetrics orchestrationMetrics = 2;
+    WorkerWorkItemMetrics activityMetrics = 3;
+    WorkerWorkItemMetrics entityMetrics = 4;
+}
+
+message WorkerWorkItemMetrics
+{
+    double averageConcurrency = 1;
 }
