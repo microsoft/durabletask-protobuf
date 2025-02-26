@@ -75,6 +75,7 @@ message ExecutionStartedEvent {
     google.protobuf.Timestamp scheduledStartTimestamp = 6;
     TraceContext parentTraceContext = 7;
     google.protobuf.StringValue orchestrationSpanID = 8;
+    map<string, string> tags = 9;
 }
 
 message ExecutionCompletedEvent {
