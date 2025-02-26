@@ -391,6 +391,7 @@ message OrchestrationState {
     google.protobuf.StringValue executionId = 12;
     google.protobuf.Timestamp completedTimestamp = 13;
     google.protobuf.StringValue parentInstanceId = 14;
+    map<string, string> tags = 15;
 }
 
 message RaiseEventRequest {
