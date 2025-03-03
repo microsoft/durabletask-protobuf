@@ -563,7 +563,7 @@ message EntityBatchResult {
     repeated OperationAction actions = 2;
     google.protobuf.StringValue entityState = 3;
     TaskFailureDetails failureDetails = 4;
-    string completionToken = 5;
+    google.protobuf.StringValue completionToken = 5;
     repeated OperationInfo operationInfos = 6; // used only with DTS
 }
 
