@@ -453,6 +453,7 @@ message PurgeInstancesRequest {
         PurgeInstanceFilter purgeInstanceFilter = 2;
     }
     bool recursive = 3;
+    bool pollable = 4;
 }
 
 message PurgeInstanceFilter {
