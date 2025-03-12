@@ -463,6 +463,20 @@ message PurgeInstanceFilter {
 
 message PurgeInstancesResponse {
     int32 deletedInstanceCount = 1;
+    string operationId = 2;
+}
+
+message GetOperationResultRequest {
+    string operationId = 1;
+}
+
+message GetOperationResultResponse {
+    string operationId = 1;
+    string status = 2;
+    int32 deletedInstanceCount = 3;
+    string errorMessage = 4;
+    google.protobuf.Timestamp createdTime = 5;
+    google.protobuf.Timestamp lastUpdatedTime = 6;
 }
 
 message CreateTaskHubRequest {
@@ -652,6 +666,7 @@ service TaskHubSidecarService {
 
     rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
     rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
+    rpc GetOperationResult(GetOperationResultRequest) returns (GetOperationResultResponse);
 
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
