@@ -44,6 +44,9 @@ service BackendService {
     // Purges the state of one or more orchestration instances.
     rpc PurgeInstances (PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
+    // Gets the status of an orchestration purge operation.
+    rpc GetPurgeStatus (GetPurgeStatusRequest) returns (GetPurgeStatusResponse);
+
     // Cleans entity storage.
     rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
 
