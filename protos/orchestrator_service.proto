@@ -574,7 +574,6 @@ message OperationRequest {
     string requestId = 2;
     google.protobuf.StringValue input = 3;
     TraceContext TraceContext = 4;
-    string TraceParent = 5;
 }
 
 message OperationResult {
@@ -591,10 +590,14 @@ message OperationInfo {
 
 message OperationResultSuccess {
     google.protobuf.StringValue result = 1;
+    google.protobuf.Timestamp startTime = 2;
+    google.protobuf.Timestamp endTime = 3;
 }
 
 message OperationResultFailure {
     TaskFailureDetails failureDetails = 1;
+    google.protobuf.Timestamp startTime = 2;
+    google.protobuf.Timestamp endTime = 3;
 }
 
 message OperationAction {
@@ -610,7 +613,8 @@ message SendSignalAction {
     string name = 2;
     google.protobuf.StringValue input = 3;
     google.protobuf.Timestamp scheduledTime = 4;
-    TraceContext parentTraceContext = 5;
+    google.protobuf.Timestamp requestTime = 5;
+    TraceContext parentTraceContext = 6;
 }
 
 message StartNewOrchestrationAction {
@@ -619,7 +623,8 @@ message StartNewOrchestrationAction {
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
     google.protobuf.Timestamp scheduledTime = 5;
-    TraceContext parentTraceContext = 6;
+    google.protobuf.Timestamp requestTime = 6;
+    TraceContext parentTraceContext = 7;
 }
 
 service TaskHubSidecarService {
