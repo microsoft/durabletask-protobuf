@@ -574,6 +574,7 @@ message OperationRequest {
     string requestId = 2;
     google.protobuf.StringValue input = 3;
     TraceContext TraceContext = 4;
+    string TraceParent = 5;
 }
 
 message OperationResult {
