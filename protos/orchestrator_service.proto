@@ -573,6 +573,7 @@ message OperationRequest {
     string operation = 1;
     string requestId = 2;
     google.protobuf.StringValue input = 3;
+    TraceContext TraceContext = 4;
 }
 
 message OperationResult {
@@ -608,6 +609,7 @@ message SendSignalAction {
     string name = 2;
     google.protobuf.StringValue input = 3;
     google.protobuf.Timestamp scheduledTime = 4;
+    TraceContext parentTraceContext = 5;
 }
 
 message StartNewOrchestrationAction {
@@ -616,6 +618,7 @@ message StartNewOrchestrationAction {
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
     google.protobuf.Timestamp scheduledTime = 5;
+    TraceContext parentTraceContext = 6;
 }
 
 service TaskHubSidecarService {
