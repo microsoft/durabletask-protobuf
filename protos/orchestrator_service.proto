@@ -590,14 +590,12 @@ message OperationInfo {
 
 message OperationResultSuccess {
     google.protobuf.StringValue result = 1;
-    google.protobuf.Timestamp startTime = 2;
-    google.protobuf.Timestamp endTime = 3;
+    google.protobuf.Timestamp endTime = 2;
 }
 
 message OperationResultFailure {
     TaskFailureDetails failureDetails = 1;
-    google.protobuf.Timestamp startTime = 2;
-    google.protobuf.Timestamp endTime = 3;
+    google.protobuf.Timestamp endTime = 2;
 }
 
 message OperationAction {
