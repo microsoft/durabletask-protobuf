@@ -341,6 +341,7 @@ message CreateInstanceRequest {
     google.protobuf.StringValue executionId = 7;
     map<string, string> tags = 8;
     TraceContext parentTraceContext = 9;
+    google.protobuf.Timestamp requestTime = 10;
 }
 
 message OrchestrationIdReusePolicy {
@@ -488,6 +489,7 @@ message SignalEntityRequest {
     string requestId = 4;
     google.protobuf.Timestamp scheduledTime = 5;
     TraceContext parentTraceContext = 6;
+    google.protobuf.Timestamp requestTime = 7;
 }
 
 message SignalEntityResponse {
