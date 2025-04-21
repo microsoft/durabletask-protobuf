@@ -318,6 +318,7 @@ message OrchestratorRequest {
     repeated HistoryEvent newEvents = 4;
     OrchestratorEntityParameters entityParameters = 5;
     bool requiresHistoryStreaming = 6;
+    map<string, google.protobuf.Value> orchestratorContextConfig = 7;
 }
 
 message OrchestratorResponse {
