@@ -11,6 +11,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
 
 message OrchestrationInstance {
     string instanceId = 1;
@@ -318,6 +319,7 @@ message OrchestratorRequest {
     repeated HistoryEvent newEvents = 4;
     OrchestratorEntityParameters entityParameters = 5;
     bool requiresHistoryStreaming = 6;
+    map<string, google.protobuf.Value> properties = 7;
 }
 
 message OrchestratorResponse {
@@ -464,6 +466,7 @@ message PurgeInstanceFilter {
 
 message PurgeInstancesResponse {
     int32 deletedInstanceCount = 1;
+    google.protobuf.BoolValue isComplete = 2;
 }
 
 message CreateTaskHubRequest {
@@ -629,6 +632,30 @@ message StartNewOrchestrationAction {
     TraceContext parentTraceContext = 7;
 }
 
+message AbandonActivityTaskRequest {
+    string completionToken = 1;
+}
+
+message AbandonActivityTaskResponse {
+    // Empty.
+}
+
+message AbandonOrchestrationTaskRequest {
+    string completionToken = 1;
+}
+
+message AbandonOrchestrationTaskResponse {
+    // Empty.
+}
+
+message AbandonEntityTaskRequest {
+    string completionToken = 1;
+}
+
+message AbandonEntityTaskResponse {
+    // Empty.
+}
+
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -690,6 +717,15 @@ service TaskHubSidecarService {
 
     // clean entity storage
     rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
+
+    // Abandons a single work item
+    rpc AbandonTaskActivityWorkItem(AbandonActivityTaskRequest) returns (AbandonActivityTaskResponse);
+
+    // Abandon an orchestration work item
+    rpc AbandonTaskOrchestratorWorkItem(AbandonOrchestrationTaskRequest) returns (AbandonOrchestrationTaskResponse);
+
+    // Abandon an entity work item
+    rpc AbandonTaskEntityWorkItem(AbandonEntityTaskRequest) returns (AbandonEntityTaskResponse);
 }
 
 message GetWorkItemsRequest {
