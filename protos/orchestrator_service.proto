@@ -195,7 +195,7 @@ message EntityOperationCalledEvent {
 }
 
 message EntityLockRequestedEvent {
-    string criticalSectionId = 1;  
+    string criticalSectionId = 1;
     repeated string lockSet = 2;
     int32 position = 3;
     google.protobuf.StringValue parentInstanceId = 4; // used only within messages, null in histories 
@@ -220,7 +220,7 @@ message EntityUnlockSentEvent {
 message EntityLockGrantedEvent {
     string criticalSectionId = 1;
 }
- 
+
 message HistoryEvent {
     int32 eventId = 1;
     google.protobuf.Timestamp timestamp = 2;
@@ -247,8 +247,8 @@ message HistoryEvent {
         ExecutionResumedEvent executionResumed = 22;
         EntityOperationSignaledEvent entityOperationSignaled = 23;
         EntityOperationCalledEvent entityOperationCalled = 24;
-        EntityOperationCompletedEvent entityOperationCompleted = 25; 
-        EntityOperationFailedEvent entityOperationFailed = 26; 
+        EntityOperationCompletedEvent entityOperationCompleted = 25;
+        EntityOperationFailedEvent entityOperationFailed = 26;
         EntityLockRequestedEvent entityLockRequested = 27;
         EntityLockGrantedEvent entityLockGranted = 28;
         EntityUnlockSentEvent entityUnlockSent = 29;
@@ -268,6 +268,7 @@ message CreateSubOrchestrationAction {
     string name = 2;
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
+    TraceContext parentTraceContext = 5;
 }
 
 message CreateTimerAction {
@@ -505,7 +506,7 @@ message SignalEntityRequest {
 }
 
 message SignalEntityResponse {
-     // no payload
+    // no payload
 }
 
 message GetEntityRequest {
@@ -680,16 +681,16 @@ service TaskHubSidecarService {
 
     // Waits for an orchestration instance to reach a running or completion state.
     rpc WaitForInstanceStart(GetInstanceRequest) returns (GetInstanceResponse);
-    
+
     // Waits for an orchestration instance to reach a completion state (completed, failed, terminated, etc.).
     rpc WaitForInstanceCompletion(GetInstanceRequest) returns (GetInstanceResponse);
 
     // Raises an event to a running orchestration instance.
     rpc RaiseEvent(RaiseEventRequest) returns (RaiseEventResponse);
-    
+
     // Terminates a running orchestration instance.
     rpc TerminateInstance(TerminateRequest) returns (TerminateResponse);
-    
+
     // Suspends a running orchestration instance.
     rpc SuspendInstance(SuspendRequest) returns (SuspendResponse);
 
@@ -771,7 +772,7 @@ message CompleteTaskResponse {
 }
 
 message HealthPing {
-	// No payload
+    // No payload
 }
 
 message StreamInstanceHistoryRequest {
