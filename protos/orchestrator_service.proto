@@ -696,8 +696,8 @@ service TaskHubSidecarService {
 
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
-    rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
-    rpc CompleteEntityTask(EntityBatchResult) returns (CompleteTaskResponse);
+    rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteOrchestratorTaskResponse);
+    rpc CompleteEntityTask(EntityBatchResult) returns (CompleteEntityTaskResponse);
 
     // Gets the history of an orchestration instance as a stream of events.
     rpc StreamInstanceHistory(StreamInstanceHistoryRequest) returns (stream HistoryChunk);
@@ -761,6 +761,14 @@ message WorkItem {
 
 message CompleteTaskResponse {
     // No payload
+}
+
+message CompleteOrchestratorTaskResponse {
+    repeated HistoryEvent newHistory = 1;
+}
+
+message CompleteEntityTaskResponse {
+    google.protobuf.StringValue entityState = 1;
 }
 
 message HealthPing {
