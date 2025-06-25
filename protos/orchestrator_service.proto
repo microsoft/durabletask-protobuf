@@ -569,7 +569,7 @@ message EntityBatchResult {
     TaskFailureDetails failureDetails = 4;
     string completionToken = 5;
     repeated OperationInfo operationInfos = 6; // used only with DTS
-    bool stateCached = 7; // Whether or not the worker cached the entity state
+    bool entityStateCached = 7; // Whether or not the worker cached the entity state
 }
 
 message EntityRequest {

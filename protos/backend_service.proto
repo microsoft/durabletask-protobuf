@@ -209,7 +209,7 @@ message CompleteEntityWorkItemRequest {
     repeated OrchestratorMessage messages = 5;
 
     // Whether or not the worker cached the entity state
-    bool stateCached = 6;
+    bool entityStateCached = 6;
 }
 
 // Response payload for completing an entity work item.
