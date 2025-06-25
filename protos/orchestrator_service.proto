@@ -577,6 +577,7 @@ message EntityRequest {
     string executionId = 2;
     google.protobuf.StringValue entityState = 3; // null if entity does not exist
     repeated HistoryEvent operationRequests = 4;
+    bool entityStateExists = 5;
 }
 
 message OperationRequest {
