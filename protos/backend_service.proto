@@ -159,6 +159,8 @@ message CompleteOrchestrationWorkItemRequest {
     // The number of work item events that were processed by the orchestrator.
     // This field is optional. If not set, the service should assume that the orchestrator processed all events.
     google.protobuf.Int32Value numEventsProcessed = 9;
+
+    // Whether or not the worker cached the orchestration history
     bool historyCached = 10;
 }
 
@@ -205,6 +207,9 @@ message CompleteEntityWorkItemRequest {
     // The messages that were sent by the executed operations. This must
     // include any responses to the operation calls.
     repeated OrchestratorMessage messages = 5;
+
+    // Whether or not the worker cached the entity state
+    bool stateCached = 6;
 }
 
 // Response payload for completing an entity work item.
