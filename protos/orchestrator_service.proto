@@ -476,6 +476,10 @@ message RestartInstanceRequest {
     bool restartWithNewInstanceId = 2;
 }
 
+message RestartInstanceResponse {
+    string instanceId = 1;
+}
+
 message CreateTaskHubRequest {
     bool recreateIfExists = 1;
 }
@@ -677,7 +681,7 @@ service TaskHubSidecarService {
     rpc RewindInstance(RewindInstanceRequest) returns (RewindInstanceResponse);
 
     // Restarts an orchestration instance.
-    rpc RestartInstance(RestartInstanceRequest) returns (CreateInstanceResponse);
+    rpc RestartInstance(RestartInstanceRequest) returns (RestartInstanceResponse);
 
     // Waits for an orchestration instance to reach a running or completion state.
     rpc WaitForInstanceStart(GetInstanceRequest) returns (GetInstanceResponse);
