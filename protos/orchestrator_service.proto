@@ -558,6 +558,7 @@ message EntityBatchRequest {
     string instanceId = 1;
     google.protobuf.StringValue entityState = 2;
     repeated OperationRequest operations = 3;
+    map<string, google.protobuf.Value> properties = 4;
 }
 
 message EntityBatchResult {
