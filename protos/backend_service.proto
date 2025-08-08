@@ -159,6 +159,8 @@ message CompleteOrchestrationWorkItemRequest {
     // The number of work item events that were processed by the orchestrator.
     // This field is optional. If not set, the service should assume that the orchestrator processed all events.
     google.protobuf.Int32Value numEventsProcessed = 9;
+
+    OrchestrationTraceContext orchestrationTraceContext = 10;
 }
 
 // Response payload for completing an orchestration work item.
