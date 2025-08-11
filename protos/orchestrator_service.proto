@@ -658,6 +658,14 @@ message AbandonEntityTaskResponse {
     // Empty.
 }
 
+message TerminateOrchestrationsRequest {
+    repeated string instanceIds = 1;
+}
+
+message TerminateOrchestrationsResponse {
+    repeated string instanceIds = 1;
+}
+
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
