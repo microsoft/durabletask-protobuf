@@ -658,12 +658,12 @@ message AbandonEntityTaskResponse {
     // Empty.
 }
 
-message TerminateOrchestrationsRequest {
+message ManuallyTerminateOrchestrationsRequest {
     repeated string instanceIds = 1;
 }
 
-message TerminateOrchestrationsResponse {
-    repeated string instanceIds = 1;
+message ManuallyTerminateOrchestrationsResponse {
+    // Empty.
 }
 
 service TaskHubSidecarService {
@@ -736,6 +736,9 @@ service TaskHubSidecarService {
 
     // Abandon an entity work item
     rpc AbandonTaskEntityWorkItem(AbandonEntityTaskRequest) returns (AbandonEntityTaskResponse);
+
+    // Abandon an entity work item
+    rpc ManuallyTerminateOrchestrations(ManuallyTerminateOrchestrationsRequest) returns (ManuallyTerminateOrchestrationsResponse);
 }
 
 message GetWorkItemsRequest {
