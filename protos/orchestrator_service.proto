@@ -660,6 +660,7 @@ message AbandonEntityTaskResponse {
 
 message ManuallyTerminateOrchestrationsRequest {
     repeated string instanceIds = 1;
+    google.protobuf.StringValue reason = 2;
 }
 
 message ManuallyTerminateOrchestrationsResponse {
@@ -737,7 +738,7 @@ service TaskHubSidecarService {
     // Abandon an entity work item
     rpc AbandonTaskEntityWorkItem(AbandonEntityTaskRequest) returns (AbandonEntityTaskResponse);
 
-    // Abandon an entity work item
+    // Manually terminate orchestrations (i.e., by changing their runtime status in storage to terminated)
     rpc ManuallyTerminateOrchestrations(ManuallyTerminateOrchestrationsRequest) returns (ManuallyTerminateOrchestrationsResponse);
 }
 
