@@ -81,7 +81,7 @@ service BackendService {
     rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
 
     // Immediately terminate orchestrations (i.e., by changing their runtime status in storage to terminated)
-    rpc ImmediatelyTerminateOrchestrations(ImmediatelyTerminateOrchestrationsRequest) returns (ImmediatelyTerminateOrchestrationsResponse);
+    rpc EmergencyTerminateOrchestrations(EmergencyTerminateOrchestrationsRequest) returns (EmergencyTerminateOrchestrationsResponse);
 }
 
 // Request payload for adding new orchestration events.

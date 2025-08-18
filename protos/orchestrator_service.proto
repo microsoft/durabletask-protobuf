@@ -658,12 +658,12 @@ message AbandonEntityTaskResponse {
     // Empty.
 }
 
-message ImmediatelyTerminateOrchestrationsRequest {
+message EmergencyTerminateOrchestrationsRequest {
     repeated string instanceIds = 1;
     google.protobuf.StringValue reason = 2;
 }
 
-message ImmediatelyTerminateOrchestrationsResponse {
+message EmergencyTerminateOrchestrationsResponse {
     // Empty.
 }
 
@@ -739,7 +739,7 @@ service TaskHubSidecarService {
     rpc AbandonTaskEntityWorkItem(AbandonEntityTaskRequest) returns (AbandonEntityTaskResponse);
 
     // Immediately terminate orchestrations (i.e., by changing their runtime status in storage to terminated)
-    rpc ImmediatelyTerminateOrchestrations(ImmediatelyTerminateOrchestrationsRequest) returns (ImmediatelyTerminateOrchestrationsResponse);
+    rpc EmergencyTerminateOrchestrations(EmergencyTerminateOrchestrationsRequest) returns (EmergencyTerminateOrchestrationsResponse);
 }
 
 message GetWorkItemsRequest {
