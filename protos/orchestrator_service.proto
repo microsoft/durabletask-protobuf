@@ -664,7 +664,7 @@ message EmergencyTerminateOrchestrationsRequest {
 }
 
 message EmergencyTerminateOrchestrationsResponse {
-    // Empty.
+    repeated string unterminatedRunningInstanceIds = 1;
 }
 
 service TaskHubSidecarService {
