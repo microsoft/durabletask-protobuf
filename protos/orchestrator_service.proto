@@ -664,6 +664,8 @@ message EmergencyTerminateOrchestrationsRequest {
 }
 
 message EmergencyTerminateOrchestrationsResponse {
+    // Those running instances which could not be terminated because they had locked entities at the time of the emergency terminate call.
+    // Note that instance IDs which do not exist or are already completed are not included in this list.
     repeated string unterminatedRunningInstanceIds = 1;
 }
 
@@ -738,7 +740,8 @@ service TaskHubSidecarService {
     // Abandon an entity work item
     rpc AbandonTaskEntityWorkItem(AbandonEntityTaskRequest) returns (AbandonEntityTaskResponse);
 
-    // Immediately terminate orchestrations (i.e., by changing their runtime status in storage to terminated)
+    // "Emergency" terminate orchestrations by immediately changing their status in storage. Orchestrations with locked entities at the time of this 
+    // call will not be terminated, and their IDs are included in the unterminatedRunningInstanceIds field of the response.
     rpc EmergencyTerminateOrchestrations(EmergencyTerminateOrchestrationsRequest) returns (EmergencyTerminateOrchestrationsResponse);
 }
 

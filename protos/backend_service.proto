@@ -80,7 +80,8 @@ service BackendService {
     // Returns the current metrics for the backend service.
     rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
 
-    // Immediately terminate orchestrations (i.e., by changing their runtime status in storage to terminated)
+    // "Emergency" terminate orchestrations by immediately changing their status in storage. Orchestrations with locked entities at the time of this 
+    // call will not be terminated, and their IDs are included in the unterminatedRunningInstanceIds field of the response.
     rpc EmergencyTerminateOrchestrations(EmergencyTerminateOrchestrationsRequest) returns (EmergencyTerminateOrchestrationsResponse);
 }
 
