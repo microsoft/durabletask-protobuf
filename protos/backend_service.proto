@@ -79,6 +79,9 @@ service BackendService {
 
     // Returns the current metrics for the backend service.
     rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
+
+    // Rewinds an orchestration instance to last known good state and replays from there.
+    rpc RewindInstance(RewindInstanceRequest) returns (RewindInstanceResponse);
 }
 
 // Request payload for adding new orchestration events.
