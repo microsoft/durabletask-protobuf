@@ -384,7 +384,7 @@ message RewindInstanceRequest {
 }
 
 message RewindInstanceResponse {
-    // Empty for now. Using explicit type incase we want to add content later.
+    google.protobuf.StringValue failueReason = 1;
 }
 
 message OrchestrationState {
