@@ -384,7 +384,7 @@ message RewindInstanceRequest {
 }
 
 message RewindInstanceResponse {
-    google.protobuf.StringValue failueReason = 1;
+    google.protobuf.StringValue failureReason = 1;
 }
 
 message OrchestrationState {
