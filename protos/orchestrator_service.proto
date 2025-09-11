@@ -659,14 +659,15 @@ message AbandonEntityTaskResponse {
 }
 
 message SkipGracefulOrchestrationTerminationsRequest {
+    // A maximum of 500 instance IDs can be provided in this list.
     repeated string instanceIds = 1;
     google.protobuf.StringValue reason = 2;
 }
 
 message SkipGracefulOrchestrationTerminationsResponse {
-    // Those running instances which could not be terminated because they had locked entities at the time of this termination call.
-    // Note that instance IDs which do not exist or are already completed are not included in this list.
-    repeated string unterminatedRunningInstanceIds = 1;
+    // Those instances which could not be terminated because they had locked entities at the time of this termination call,
+    // or because they were already in a terminal state (completed, failed, terminated, etc.), or had been purged.
+    repeated string unterminatedInstanceIds = 1;
 }
 
 service TaskHubSidecarService {
@@ -740,8 +741,8 @@ service TaskHubSidecarService {
     // Abandon an entity work item
     rpc AbandonTaskEntityWorkItem(AbandonEntityTaskRequest) returns (AbandonEntityTaskResponse);
 
-    // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated". Orchestrations with locked entities
-    // at the time of this call will not be terminated, and their IDs are included in the unterminatedRunningInstanceIds field of the response.
+    // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated".
+    // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
     rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
 }
 

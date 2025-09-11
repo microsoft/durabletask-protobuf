@@ -80,8 +80,8 @@ service BackendService {
     // Returns the current metrics for the backend service.
     rpc GetMetrics (GetMetricsRequest) returns (GetMetricsResponse);
 
-    // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated". Orchestrations with locked entities
-    // at the time of this call will not be terminated, and their IDs are included in the unterminatedRunningInstanceIds field of the response.
+    // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated".
+    // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
     rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
 }
 
