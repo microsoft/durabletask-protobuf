@@ -467,6 +467,7 @@ message PurgeInstancesRequest {
     oneof request {
         string instanceId = 1;
         PurgeInstanceFilter purgeInstanceFilter = 2;
+        repeated string instanceIds = 4;
     }
     bool recursive = 3;
 }
