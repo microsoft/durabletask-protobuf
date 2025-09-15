@@ -467,7 +467,7 @@ message PurgeInstancesRequest {
     oneof request {
         string instanceId = 1;
         PurgeInstanceFilter purgeInstanceFilter = 2;
-        PurgeInstancesList purgeInstancesList = 4;
+        InstanceBatch instanceBatch = 4;
     }
     bool recursive = 3;
 }
@@ -476,10 +476,6 @@ message PurgeInstanceFilter {
     google.protobuf.Timestamp createdTimeFrom = 1;
     google.protobuf.Timestamp createdTimeTo = 2;
     repeated OrchestrationStatus runtimeStatus = 3;
-}
-
-message PurgeInstancesList {
-    repeated string instanceIds = 1;
 }
 
 message PurgeInstancesResponse {
@@ -821,4 +817,8 @@ message StreamInstanceHistoryRequest {
 
 message HistoryChunk {
     repeated HistoryEvent events = 1;
+}
+
+message InstanceBatch {
+    repeated string instanceIds = 1;
 }
