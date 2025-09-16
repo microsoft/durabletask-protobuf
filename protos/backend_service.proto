@@ -44,6 +44,9 @@ service BackendService {
     // Purges the state of one or more orchestration instances.
     rpc PurgeInstances (PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
+ 	// Restarts an orchestration instance with the option to use a new instance ID.
+    rpc RestartInstance (RestartInstanceRequest) returns (RestartInstanceResponse);
+
     // Cleans entity storage.
     rpc CleanEntityStorage(CleanEntityStorageRequest) returns (CleanEntityStorageResponse);
 
