@@ -680,8 +680,7 @@ message AbandonEntityTaskResponse {
 }
 
 message SkipGracefulOrchestrationTerminationsRequest {
-    // A maximum of 500 instance IDs can be provided in this list.
-    repeated string instanceIds = 1;
+    InstanceBatch instanceBatch = 1;
     google.protobuf.StringValue reason = 2;
 }
 
@@ -820,5 +819,6 @@ message HistoryChunk {
 }
 
 message InstanceBatch {
+    // A maximum of 500 instance IDs can be provided in this list.
     repeated string instanceIds = 1;
 }
