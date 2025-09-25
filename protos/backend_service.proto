@@ -26,6 +26,9 @@ service BackendService {
     // and for sending orchestration lifecycle events, such as terminate, suspend, resume, etc.
     rpc AddEvent (AddEventRequest) returns (AddEventResponse);
 
+    // The same as the AddEvent API, except for sending events to multiple orchestration instances at once.
+    rpc AddEvents (AddEventsRequest) returns (AddEventsResponse);
+
     // Returns metadata about an orchestration instance.
     rpc GetInstance (GetInstanceRequest) returns (GetInstanceResponse);
 
@@ -98,6 +101,17 @@ message AddEventRequest {
 
 // Response payload for adding new orchestration events.
 message AddEventResponse {
+    // No fields
+}
+
+// Request payload for adding new orchestration events to multiple instances.
+message AddEventsRequest {
+    // A map from instance IDs to the event to add to each.
+    map<string, HistoryEvents> events = 1;
+}
+
+// Response payload for adding new orchestration events to multiple instances.
+message AddEventsResponse {
     // No fields
 }
 
