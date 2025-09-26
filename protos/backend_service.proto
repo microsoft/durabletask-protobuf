@@ -112,9 +112,9 @@ message AddEventsRequest {
 
 // Response payload for adding new orchestration events to multiple instances.
 message AddEventsResponse {
-    // Those instances for which events were successfully added.
+    // Those instances for which events were not successfully added.
     // Events may not be successfully added due to capacity issues, or if the target instance does not exist.
-    repeated string successfulInstanceIds = 1;
+    repeated string unsuccessfulInstanceIds = 1;
 }
 
 // Request payload for waiting for instance completion.
