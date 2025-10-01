@@ -41,6 +41,7 @@ message TaskFailureDetails {
     google.protobuf.StringValue stackTrace = 3;
     TaskFailureDetails innerFailure = 4;
     bool isNonRetriable = 5;
+    map<string, google.protobuf.Value> properties = 6;
 }
 
 enum OrchestrationStatus {
@@ -690,6 +691,7 @@ message SkipGracefulOrchestrationTerminationsResponse {
     // Those instances which could not be terminated because they had locked entities at the time of this termination call,
     // are already in a terminal state (completed, failed, terminated, etc.), are not orchestrations, or do not exist (i.e. have been purged)
     repeated string unterminatedInstanceIds = 1;
+
 }
 
 service TaskHubSidecarService {
