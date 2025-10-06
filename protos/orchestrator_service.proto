@@ -219,6 +219,16 @@ message EntityLockGrantedEvent {
     string criticalSectionId = 1;
 }
 
+message ExecutionRewoundEvent {
+    google.protobuf.StringValue reason = 1;
+    string name = 2;
+    google.protobuf.StringValue version = 3;
+    string instanceId = 4;
+    google.protobuf.StringValue input = 5;
+    ParentInstanceInfo parentInstance = 6;
+    map<string, string> tags = 7;
+}
+
 message HistoryEvent {
     int32 eventId = 1;
     google.protobuf.Timestamp timestamp = 2;
@@ -250,6 +260,7 @@ message HistoryEvent {
         EntityLockRequestedEvent entityLockRequested = 27;
         EntityLockGrantedEvent entityLockGranted = 28;
         EntityUnlockSentEvent entityUnlockSent = 29;
+        ExecutionRewoundEvent executionRewound = 30;
     }
 }
 
@@ -303,6 +314,10 @@ message SendEntityMessageAction {
     }
 }
 
+message RewindOrchestrationAction {
+    google.protobuf.StringValue reason = 1;
+}
+
 message OrchestratorAction {
     int32 id = 1;
     oneof orchestratorActionType {
@@ -313,6 +328,7 @@ message OrchestratorAction {
         CompleteOrchestrationAction completeOrchestration = 6;
         TerminateOrchestrationAction terminateOrchestration = 7;
         SendEntityMessageAction sendEntityMessage = 8;
+        RewindOrchestrationAction rewindOrchestration = 9;
     }
 }
 
