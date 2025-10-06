@@ -85,7 +85,7 @@ service BackendService {
 
     // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated".
     // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
-    rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);W
+    rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
 }
 
 // Request payload for adding new orchestration events.
