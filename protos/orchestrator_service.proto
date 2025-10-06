@@ -224,8 +224,8 @@ message ExecutionRewoundEvent {
     google.protobuf.StringValue reason = 1;
     string name = 2;
     google.protobuf.StringValue version = 3;
-    string instanceId = 4;
-    google.protobuf.StringValue input = 5;
+    google.protobuf.StringValue input = 4;
+    OrchestrationInstance orchestrationInstance = 5;
     ParentInstanceInfo parentInstance = 6;
     map<string, string> tags = 7;
 }
