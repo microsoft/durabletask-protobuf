@@ -222,7 +222,7 @@ message EntityLockGrantedEvent {
 
 message ExecutionRewoundEvent {
     google.protobuf.StringValue reason = 1;
-    string name = 2;
+    google.protobuf.StringValue name = 2;
     google.protobuf.StringValue version = 3;
     OrchestrationInstance orchestrationInstance = 4;
     ParentInstanceInfo parentInstance = 5;
