@@ -115,12 +115,7 @@ message SubOrchestrationInstanceCreatedEvent {
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
     TraceContext parentTraceContext = 5;
-
-    // We add this as a new field rather than making a OrchestrationInstance
-    // to combine the instanceId and executionId for backwards compatibility
-    google.protobuf.StringValue executionId = 6;
-    ParentInstanceInfo parentInstance = 7;
-    map<string, string> tags = 8;
+    map<string, string> tags = 6;
 }
 
 message SubOrchestrationInstanceCompletedEvent {
@@ -228,11 +223,8 @@ message EntityLockGrantedEvent {
 
 message ExecutionRewoundEvent {
     google.protobuf.StringValue reason = 1;
-    google.protobuf.StringValue name = 2;
-    google.protobuf.StringValue version = 3;
-    OrchestrationInstance orchestrationInstance = 4;
-    ParentInstanceInfo parentInstance = 5;
-    map<string, string> tags = 6;
+    google.protobuf.StringValue parentExecutionId = 2; // used only for rewinding suborchestrations, null otherwise
+    google.protobuf.StringValue instanceId = 3; // used only for rewinding suborchestrations, null otherwise
 }
 
 message HistoryEvent {
