@@ -55,6 +55,11 @@ enum OrchestrationStatus {
     ORCHESTRATION_STATUS_SUSPENDED = 7;
 }
 
+enum ExportStatus {
+    EXPORT_STATUS_COMPLETED = 0;
+    EXPORT_STATUS_FAILED = 1;
+}
+
 message ParentInstanceInfo {
     int32 taskScheduledId = 1;
     google.protobuf.StringValue name = 2;
@@ -220,6 +225,18 @@ message EntityLockGrantedEvent {
     string criticalSectionId = 1;
 }
 
+message ExportStartedEvent {
+}
+
+message ExportCompletedEvent {
+    ExportStatus exportStatus = 1;
+}
+
+message ExportFailedEvent {
+    ExportStatus exportStatus = 1;
+    TaskFailureDetails failureDetails = 2;
+}
+
 message HistoryEvent {
     int32 eventId = 1;
     google.protobuf.Timestamp timestamp = 2;
@@ -251,6 +268,9 @@ message HistoryEvent {
         EntityLockRequestedEvent entityLockRequested = 27;
         EntityLockGrantedEvent entityLockGranted = 28;
         EntityUnlockSentEvent entityUnlockSent = 29;
+        ExportStartedEvent exportStarted = 30;
+        ExportCompletedEvent exportCompleted = 31;
+        ExportFailedEvent exportFailed = 32;
     }
 }
 
@@ -289,6 +309,11 @@ message CompleteOrchestrationAction {
     TaskFailureDetails failureDetails = 6;
 }
 
+message CompleteExportAction {
+    ExportStatus exportStatus = 1;
+    TaskFailureDetails failureDetails = 2;
+}
+
 message TerminateOrchestrationAction {
     string instanceId = 1;
     google.protobuf.StringValue reason = 2;
@@ -314,6 +339,7 @@ message OrchestratorAction {
         CompleteOrchestrationAction completeOrchestration = 6;
         TerminateOrchestrationAction terminateOrchestration = 7;
         SendEntityMessageAction sendEntityMessage = 8;
+        CompleteExportAction completeExport = 9;
     }
 }
 
@@ -360,6 +386,7 @@ message CreateInstanceRequest {
     map<string, string> tags = 8;
     TraceContext parentTraceContext = 9;
     google.protobuf.Timestamp requestTime = 10;
+    bool exportable = 11;
 }
 
 message OrchestrationIdReusePolicy {
