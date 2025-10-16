@@ -224,6 +224,7 @@ message ExecutionRewoundEvent {
     google.protobuf.StringValue reason = 1;
     google.protobuf.StringValue parentExecutionId = 2; // used only for rewinding suborchestrations, null otherwise
     google.protobuf.StringValue instanceId = 3; // used only for rewinding suborchestrations, null otherwise
+    TraceContext parentTraceContext = 4; // used only for rewinding suborchestrations, null otherwise
 }
 
 message HistoryEvent {
