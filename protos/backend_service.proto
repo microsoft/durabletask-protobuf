@@ -26,6 +26,9 @@ service BackendService {
     // and for sending orchestration lifecycle events, such as terminate, suspend, resume, etc.
     rpc AddEvent (AddEventRequest) returns (AddEventResponse);
 
+    // The same as the AddEvent API, except for sending events to multiple orchestration instances at once.
+    rpc AddEvents (AddEventsRequest) returns (AddEventsResponse);
+
     // Returns metadata about an orchestration instance.
     rpc GetInstance (GetInstanceRequest) returns (GetInstanceResponse);
 
@@ -101,6 +104,19 @@ message AddEventResponse {
     // No fields
 }
 
+// Request payload for adding new orchestration events to multiple instances.
+message AddEventsRequest {
+    // A map from instance IDs to the event to add to each.
+    map<string, HistoryEvent> events = 1;
+}
+
+// Response payload for adding new orchestration events to multiple instances.
+message AddEventsResponse {
+    // Those instances for which events were not successfully added.
+    // Events may not be successfully added due to capacity issues, or if the target instance does not exist.
+    repeated string unsuccessfulInstanceIds = 1;
+}
+
 // Request payload for waiting for instance completion.
 message WaitForInstanceRequest {
     string instanceId = 1;
@@ -168,6 +184,9 @@ message CompleteOrchestrationWorkItemRequest {
     google.protobuf.Int32Value numEventsProcessed = 9;
 
     OrchestrationTraceContext orchestrationTraceContext = 10;
+
+    // True if this is a partial (chunked) completion. The backend must keep the work item open until the final chunk (isPartial=false).
+    bool isPartial = 11;
 }
 
 // Response payload for completing an orchestration work item.
