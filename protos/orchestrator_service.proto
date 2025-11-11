@@ -383,6 +383,7 @@ message CreateInstanceResponse {
 message GetInstanceRequest {
     string instanceId = 1;
     bool getInputsAndOutputs = 2;
+    bool getHistory = 3;
 }
 
 message GetInstanceResponse {
@@ -415,6 +416,7 @@ message OrchestrationState {
     google.protobuf.Timestamp completedTimestamp = 13;
     google.protobuf.StringValue parentInstanceId = 14;
     map<string, string> tags = 15;
+    repeated HistoryEvent history = 16;
 }
 
 message RaiseEventRequest {
