@@ -601,6 +601,8 @@ message EntityBatchResult {
     TaskFailureDetails failureDetails = 4;
     string completionToken = 5;
     repeated OperationInfo operationInfos = 6; // used only with DTS
+    // Whether or not an entity state is required to complete the original EntityBatchRequest and none was provided.
+    bool requiresState = 7;
 }
 
 message EntityRequest {
