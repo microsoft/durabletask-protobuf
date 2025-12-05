@@ -187,6 +187,10 @@ message CompleteOrchestrationWorkItemRequest {
 
     // True if this is a partial (chunked) completion. The backend must keep the work item open until the final chunk (isPartial=false).
     bool isPartial = 11;
+    
+    // Zero-based position of the current chunk within a chunked completion sequence.
+    // This field is omitted for non-chunked completions.
+    google.protobuf.Int32Value chunkIndex = 12;
 }
 
 // Response payload for completing an orchestration work item.
