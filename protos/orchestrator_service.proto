@@ -276,6 +276,7 @@ message CreateSubOrchestrationAction {
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
     TraceContext parentTraceContext = 5;
+    map<string, string> tags = 6;
 }
 
 message CreateTimerAction {
