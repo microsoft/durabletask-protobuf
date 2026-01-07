@@ -804,6 +804,7 @@ message GetWorkItemsRequest {
     int32 maxConcurrentEntityWorkItems = 3;
 
     repeated WorkerCapability capabilities = 10;
+    SupportedActions supportedActions = 11;
 }
 
 enum WorkerCapability {
@@ -824,6 +825,26 @@ enum WorkerCapability {
     // Work items may contain URI references instead of inline data, and the worker must fetch them.
     // This avoids message size limits and reduces network overhead.
     WORKER_CAPABILITY_LARGE_PAYLOADS = 3;
+}
+
+message SupportedActions {
+    repeated SupportedOrchestration orchestrations = 1;
+    repeated SupporrtedActivity activities = 2;
+    repeated SupportedEntity entities = 3;
+}
+
+message SupportedOrchestration {
+    string name = 1;
+    repeated string versions = 2;
+}
+
+message SupporrtedActivity {
+    string name = 1;
+    repeated string versions = 2;
+}
+
+message SupportedEntity {
+    string name = 1;
 }
 
 message WorkItem {
