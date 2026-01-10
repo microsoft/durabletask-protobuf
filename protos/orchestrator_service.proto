@@ -509,7 +509,7 @@ message PurgeInstancesRequest {
         InstanceBatch instanceBatch = 4;
     }
     bool recursive = 3;
-    bool isEntity = 4; // used in the case when an instanceId is specified to determine if the purge request is for an entity
+    bool isEntity = 5; // used in the case when an instanceId is specified to determine if the purge request is for an entity
 }
 
 message PurgeInstanceFilter {
