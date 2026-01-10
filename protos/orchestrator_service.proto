@@ -769,6 +769,8 @@ service TaskHubSidecarService {
     // rpc DeleteInstance(DeleteInstanceRequest) returns (DeleteInstanceResponse);
 
     rpc QueryInstances(QueryInstancesRequest) returns (QueryInstancesResponse);
+    rpc ListInstanceIds(ListInstanceIdsRequest) returns (ListInstanceIdsResponse);
+    
     rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
