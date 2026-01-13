@@ -509,6 +509,8 @@ message PurgeInstancesRequest {
         InstanceBatch instanceBatch = 4;
     }
     bool recursive = 3;
+    // used in the case when an instanceId is specified to determine if the purge request is for an orchestration (as opposed to an entity)
+    bool isOrchestration = 5;
 }
 
 message PurgeInstanceFilter {
