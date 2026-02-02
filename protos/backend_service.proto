@@ -87,7 +87,7 @@ service BackendService {
     rpc AbandonEntityWorkItem (AbandonEntityWorkItemRequest) returns (AbandonEntityWorkItemResponse);
 
     // Releases an entity work item.
-    rpc ReleaseEntityWorkItem(ReleaseEntityWorkItemRequest) returns (ReleaseInstanceWorkItemResponse);
+    rpc ReleaseEntityWorkItem(ReleaseEntityWorkItemRequest) returns (ReleaseEntityWorkItemResponse);
 
     // Sends a health check ping to the backend service.
     rpc Ping (PingRequest) returns (PingResponse);
