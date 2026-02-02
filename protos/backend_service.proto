@@ -322,8 +322,9 @@ message StreamInstanceMessagesRequest {
 
 // Request payload for releasing an orchestration work item.
 message ReleaseOrchestrationWorkItemRequest {
+    string instanceId = 1;
     // The completion token that was provided when the work item was fetched.
-    string completionToken = 1;
+    string completionToken = 2;
 }
 
 // Response payload for releasing an orchestration work item.
@@ -333,8 +334,9 @@ message ReleaseOrchestrationWorkItemResponse {
 
 // Request payload for releasing an entity work item.
 message ReleaseEntityWorkItemRequest {
+    string instanceId = 1;
     // The completion token that was provided when the work item was fetched.
-    string completionToken = 1;
+    string completionToken = 2;
 }
 
 // Response payload for releasing an entity work item.
