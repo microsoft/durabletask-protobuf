@@ -247,6 +247,8 @@ message CompleteEntityWorkItemRequest {
     // The messages that were sent by the executed operations. This must
     // include any responses to the operation calls.
     repeated OrchestratorMessage messages = 5;
+
+    bool isExtendedSession = 6;
 }
 
 // Response payload for completing an entity work item.
