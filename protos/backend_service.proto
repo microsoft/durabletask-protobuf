@@ -74,7 +74,7 @@ service BackendService {
     // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
     // Immediately returns a CompleteOrchestrationWorkItemResponse upon committal of the work item, and in the case
     // of an extended session, will continue to stream any new messages to the orchestration until the call is cancelled.
-    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (stream CompleteOrchestrationWorkItemResponse);
+    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
 
     // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (AbandonOrchestrationWorkItemResponse);
@@ -85,7 +85,7 @@ service BackendService {
     // Completes an outstanding entity work item.
     // Immediately returns a CompleteEntityWorkItemResponse upon committal of the work item, and in the case
     // of an extended session, will continue to stream any new messages to the entity until the call is cancelled.
-    rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (stream CompleteEntityWorkItemResponse);
+    rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
 
     // Abandons an outstanding entity work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonEntityWorkItem (AbandonEntityWorkItemRequest) returns (AbandonEntityWorkItemResponse);
@@ -350,4 +350,12 @@ message ReleaseEntityWorkItemRequest {
 // Response payload for releasing an entity work item.
 message ReleaseEntityWorkItemResponse {
 	// No fields
+}
+
+message CompleteInstanceWorkItemResponse {
+    oneof request {
+        CompleteOrchestrationWorkItemResponse orchestratorResponse = 1;
+        CompleteEntityWorkItemResponse entityResponse = 2;
+        HistoryChunk newMessages = 3;
+    }
 }
