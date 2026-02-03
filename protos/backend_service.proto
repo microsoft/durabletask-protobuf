@@ -72,7 +72,9 @@ service BackendService {
     rpc AbandonActivityWorkItem (AbandonActivityWorkItemRequest) returns (AbandonActivityWorkItemResponse);
 
     // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
-    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (CompleteOrchestrationWorkItemResponse);
+    // Immediately returns a CompleteOrchestrationWorkItemResponse upon committal of the work item, and in the case
+    // of an extended session, will continue to stream any new messages to the orchestration until the call is cancelled.
+    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (stream CompleteOrchestrationWorkItemResponse);
 
     // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (AbandonOrchestrationWorkItemResponse);
@@ -81,7 +83,9 @@ service BackendService {
     rpc ReleaseOrchestrationWorkItem(ReleaseOrchestrationWorkItemRequest) returns (ReleaseOrchestrationWorkItemResponse);
 
     // Completes an outstanding entity work item.
-    rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (CompleteEntityWorkItemResponse);
+    // Immediately returns a CompleteEntityWorkItemResponse upon committal of the work item, and in the case
+    // of an extended session, will continue to stream any new messages to the entity until the call is cancelled.
+    rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (stream CompleteEntityWorkItemResponse);
 
     // Abandons an outstanding entity work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonEntityWorkItem (AbandonEntityWorkItemRequest) returns (AbandonEntityWorkItemResponse);
@@ -206,7 +210,8 @@ message CompleteOrchestrationWorkItemRequest {
 
 // Response payload for completing an orchestration work item.
 message CompleteOrchestrationWorkItemResponse {
-	// No fields
+    // Pending messages to this orchestration, if any.
+	repeated HistoryEvent newMessages = 1;
 }
 
 // A message to be delivered to an orchestration by the backend.
@@ -253,7 +258,8 @@ message CompleteEntityWorkItemRequest {
 
 // Response payload for completing an entity work item.
 message CompleteEntityWorkItemResponse {
-    // No fields
+    // Pending messages to this entity, if any.
+	repeated HistoryEvent newMessages = 1;
 }
 
 // Request payload for abandoning an entity work item.
