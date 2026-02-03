@@ -211,7 +211,7 @@ message CompleteOrchestrationWorkItemRequest {
 // Response payload for completing an orchestration work item.
 message CompleteOrchestrationWorkItemResponse {
     // Pending messages to this orchestration, if any.
-	repeated HistoryChunk newMessages = 1;
+	HistoryChunk newMessages = 1;
 }
 
 // A message to be delivered to an orchestration by the backend.
@@ -259,7 +259,7 @@ message CompleteEntityWorkItemRequest {
 // Response payload for completing an entity work item.
 message CompleteEntityWorkItemResponse {
     // Pending messages to this entity, if any.
-	repeated HistoryChunk newMessages = 1;
+	HistoryChunk newMessages = 1;
 }
 
 // Request payload for abandoning an entity work item.
