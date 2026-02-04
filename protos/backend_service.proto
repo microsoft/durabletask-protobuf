@@ -354,6 +354,11 @@ message CompleteInstanceWorkItemResponse {
     oneof request {
         CompleteOrchestrationWorkItemResponse orchestratorResponse = 1;
         CompleteEntityWorkItemResponse entityResponse = 2;
-        HistoryChunk newMessages = 3;
+        NewInstanceMessages newMessages = 3;
     }
+}
+
+message NewInstanceMessages {
+    HitoryChunk newMessages = 1;
+    bool isFinalChunk = 2;
 }
