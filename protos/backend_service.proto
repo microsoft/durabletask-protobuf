@@ -359,6 +359,6 @@ message CompleteInstanceWorkItemResponse {
 }
 
 message NewInstanceMessages {
-    HitoryChunk newMessages = 1;
+    HistoryChunk newMessages = 1;
     bool isFinalChunk = 2;
 }
