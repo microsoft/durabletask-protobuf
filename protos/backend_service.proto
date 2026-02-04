@@ -253,6 +253,8 @@ message CompleteEntityWorkItemRequest {
     repeated OrchestratorMessage messages = 5;
 
     bool isExtendedSession = 6;
+
+    string instanceId = 7;
 }
 
 // Response payload for completing an entity work item.
