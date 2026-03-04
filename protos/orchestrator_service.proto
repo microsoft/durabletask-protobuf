@@ -321,9 +321,7 @@ message SendEntityMessageAction {
 }
 
 message RewindOrchestrationAction {
-    google.protobuf.StringValue reason = 1;
-    google.protobuf.StringValue parentExecutionId = 2; // used only for rewinding suborchestrations, null otherwise
-    TraceContext parentTraceContext = 3; // used only for rewinding suborchestrations, null otherwise
+    repeated HistoryEvent newHistory = 1;
 }
 
 message OrchestratorAction {
