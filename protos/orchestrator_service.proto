@@ -266,6 +266,7 @@ message HistoryEvent {
         EntityUnlockSentEvent entityUnlockSent = 29;
         ExecutionRewoundEvent executionRewound = 30;
     }
+    int32 dispatchCount = 31;
 }
 
 message ScheduleTaskAction {
