@@ -72,9 +72,12 @@ service BackendService {
     rpc AbandonActivityWorkItem (AbandonActivityWorkItemRequest) returns (AbandonActivityWorkItemResponse);
 
     // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
+    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (CompleteOrchestrationWorkItemResponse);
+
+    // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
     // Immediately returns a CompleteOrchestrationWorkItemResponse upon committal of the work item, and in the case
     // of an extended session, will continue to stream any new messages to the orchestration until the call is cancelled.
-    rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
+    rpc CompleteOrchestrationWorkItemWithExtendedSession (CompleteOrchestrationWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
 
     // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (AbandonOrchestrationWorkItemResponse);
@@ -83,9 +86,12 @@ service BackendService {
     rpc ReleaseOrchestrationWorkItem(ReleaseOrchestrationWorkItemRequest) returns (ReleaseOrchestrationWorkItemResponse);
 
     // Completes an outstanding entity work item.
+    rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (CompleteEntityWorkItemResponse);
+
+    // Completes an outstanding entity work item.
     // Immediately returns a CompleteEntityWorkItemResponse upon committal of the work item, and in the case
     // of an extended session, will continue to stream any new messages to the entity until the call is cancelled.
-    rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
+    rpc CompleteEntityWorkItemWithExtendedSession (CompleteEntityWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
 
     // Abandons an outstanding entity work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonEntityWorkItem (AbandonEntityWorkItemRequest) returns (AbandonEntityWorkItemResponse);
