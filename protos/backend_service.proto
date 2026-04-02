@@ -62,9 +62,6 @@ service BackendService {
     // Gets the history of an orchestration instance as a stream of events.
     rpc StreamInstanceHistory(StreamInstanceHistoryRequest) returns (stream HistoryChunk);
 
-    // Gets pending messages to an instance as a stream of history events.
-    rpc StreamInstanceMessages(StreamInstanceMessagesRequest) returns (stream HistoryChunk);
-
     // Completes an outstanding activity work item and adds a new event to the target orchestration's inbox.
     rpc CompleteActivityWorkItem (CompleteActivityWorkItemRequest) returns (CompleteActivityWorkItemResponse);
 
@@ -327,11 +324,6 @@ message WorkItemMetrics {
 message ConnectedWorkerMetrics {
     // Number of worker instances that are currently connected to the backend
     int32 count = 1 [json_name="count"];
-}
-
-message StreamInstanceMessagesRequest {
-    string instanceId = 1;
-    bool isEntity = 2;
 }
 
 // Request payload for releasing an orchestration work item.
