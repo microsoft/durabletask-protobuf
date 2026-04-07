@@ -74,7 +74,7 @@ service BackendService {
     // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
     // Immediately returns a CompleteOrchestrationWorkItemResponse upon committal of the work item, and in the case
     // of an extended session, will continue to stream any new messages to the orchestration until the call is cancelled.
-    rpc CompleteOrchestrationWorkItemWithExtendedSession (stream CompleteOrchestrationWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
+    rpc CompleteOrchestrationWorkItemWithStreaming (stream CompleteOrchestrationWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
 
     // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (AbandonOrchestrationWorkItemResponse);
@@ -88,7 +88,7 @@ service BackendService {
     // Completes an outstanding entity work item.
     // Immediately returns a CompleteEntityWorkItemResponse upon committal of the work item, and in the case
     // of an extended session, will continue to stream any new messages to the entity until the call is cancelled.
-    rpc CompleteEntityWorkItemWithExtendedSession (stream CompleteEntityWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
+    rpc CompleteEntityWorkItemWithStreaming (stream CompleteEntityWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
 
     // Abandons an outstanding entity work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonEntityWorkItem (AbandonEntityWorkItemRequest) returns (AbandonEntityWorkItemResponse);
