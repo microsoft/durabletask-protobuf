@@ -185,12 +185,13 @@ message CompleteOrchestrationWorkItemRequest {
 
     OrchestrationTraceContext orchestrationTraceContext = 10;
 
+    /* Chunking logic has since been deprecated and fields related to it are marked as such */
     // True if this is a partial (chunked) completion. The backend must keep the work item open until the final chunk (isPartial=false).
-    bool isPartial = 11;
+    bool isPartial = 11 [deprecated=true];
     
     // Zero-based position of the current chunk within a chunked completion sequence.
     // This field is omitted for non-chunked completions.
-    google.protobuf.Int32Value chunkIndex = 12;
+    google.protobuf.Int32Value chunkIndex = 12 [deprecated=true];
 }
 
 // Response payload for completing an orchestration work item.
