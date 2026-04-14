@@ -186,6 +186,7 @@ message CompleteOrchestrationWorkItemRequest {
     OrchestrationTraceContext orchestrationTraceContext = 10;
 
     /* Chunking logic has since been deprecated and fields related to it are marked as such */
+
     // True if this is a partial (chunked) completion. The backend must keep the work item open until the final chunk (isPartial=false).
     bool isPartial = 11 [deprecated=true];
     
