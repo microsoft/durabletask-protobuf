@@ -201,18 +201,21 @@ message CompleteOrchestrationWorkItemRequest {
 
     OrchestrationTraceContext orchestrationTraceContext = 10;
 
+    /* Chunking logic has since been deprecated and fields related to it are marked as such */
+
     // True if this is a partial (chunked) completion. The backend must keep the work item open until the final chunk (isPartial=false).
-    bool isPartial = 11;
+    bool isPartial = 11 [deprecated=true];
     
     // Zero-based position of the current chunk within a chunked completion sequence.
     // This field is omitted for non-chunked completions.
-    google.protobuf.Int32Value chunkIndex = 12;
+    google.protobuf.Int32Value chunkIndex = 12 [deprecated=true];
 
+    /* Extended sessions fields */
     bool isExtendedSession = 13;
 
-    // Only non-zero in the case of chunked completions or when extended sessions are active, in which case complete
-    // will be called multiple times for the same instance work item. This field is incremented for each completion
-    // call so the backend can identify redundant completion calls for the same chunk or set of instance messages.
+    // Only non-zero in the when extended sessions are active, in which case complete  will be called multiple times
+    // for the same instance work item. This field is incremented for each completion call so the backend can identify
+    // redundant completion calls for the same set of instance messages.
     int32 completionCount = 14;
 }
 
@@ -264,10 +267,9 @@ message CompleteEntityWorkItemRequest {
 
     string instanceId = 7;
 
-    // Only non-zero in the case when an extended sessions is active, in which case complete
-    // will be called multiple times for the same instance work item. This field is incremented
-    // for each completion call so the backend can identify redundant completion calls for the same
-    // set of instance messages.
+    // Only non-zero in the when extended sessions are active, in which case complete  will be called multiple times
+    // for the same instance work item. This field is incremented for each completion call so the backend can identify
+    // redundant completion calls for the same set of instance messages.
     int32 completionCount = 8;
 }
 
