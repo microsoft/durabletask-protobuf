@@ -210,9 +210,6 @@ message CompleteOrchestrationWorkItemRequest {
     // This field is omitted for non-chunked completions.
     google.protobuf.Int32Value chunkIndex = 12 [deprecated=true];
 
-    /* Extended sessions fields */
-    bool isExtendedSession = 13;
-
     // Only non-zero in the when extended sessions are active, in which case complete  will be called multiple times
     // for the same instance work item. This field is incremented for each completion call so the backend can identify
     // redundant completion calls for the same set of instance messages.
