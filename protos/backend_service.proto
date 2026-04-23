@@ -260,8 +260,6 @@ message CompleteEntityWorkItemRequest {
     // include any responses to the operation calls.
     repeated OrchestratorMessage messages = 5;
 
-    bool isExtendedSession = 6;
-
     string instanceId = 7;
 
     // Only non-zero in the when extended sessions are active, in which case complete  will be called multiple times
