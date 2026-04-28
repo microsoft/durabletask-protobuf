@@ -71,14 +71,30 @@ service BackendService {
     // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
     rpc CompleteOrchestrationWorkItem (CompleteOrchestrationWorkItemRequest) returns (CompleteOrchestrationWorkItemResponse);
 
+    // Completes an outstanding orchestrator work item, and adds a new event to the target orchestration's inbox.
+    // Immediately returns a CompleteOrchestrationWorkItemResponse upon committal of the work item, and in the case
+    // of an extended session, will continue to stream any new messages to the orchestration until the call is cancelled.
+    rpc CompleteOrchestrationWorkItemWithExtendedSession (CompleteOrchestrationWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
+
     // Abandons an outstanding orchestrator work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonOrchestrationWorkItem (AbandonOrchestrationWorkItemRequest) returns (AbandonOrchestrationWorkItemResponse);
+
+    // Releases an orchestration work item.
+    rpc ReleaseOrchestrationWorkItem(ReleaseOrchestrationWorkItemRequest) returns (ReleaseOrchestrationWorkItemResponse);
 
     // Completes an outstanding entity work item.
     rpc CompleteEntityWorkItem (CompleteEntityWorkItemRequest) returns (CompleteEntityWorkItemResponse);
 
+    // Completes an outstanding entity work item.
+    // Immediately returns a CompleteEntityWorkItemResponse upon committal of the work item, and in the case
+    // of an extended session, will continue to stream any new messages to the entity until the call is cancelled.
+    rpc CompleteEntityWorkItemWithExtendedSession (CompleteEntityWorkItemRequest) returns (stream CompleteInstanceWorkItemResponse);
+
     // Abandons an outstanding entity work item. Abandoned work items will be delivered again after some delay.
     rpc AbandonEntityWorkItem (AbandonEntityWorkItemRequest) returns (AbandonEntityWorkItemResponse);
+
+    // Releases an entity work item.
+    rpc ReleaseEntityWorkItem(ReleaseEntityWorkItemRequest) returns (ReleaseEntityWorkItemResponse);
 
     // Sends a health check ping to the backend service.
     rpc Ping (PingRequest) returns (PingResponse);
@@ -193,11 +209,16 @@ message CompleteOrchestrationWorkItemRequest {
     // Zero-based position of the current chunk within a chunked completion sequence.
     // This field is omitted for non-chunked completions.
     google.protobuf.Int32Value chunkIndex = 12 [deprecated=true];
+
+    // Only non-zero in the when extended sessions are active, in which case complete  will be called multiple times
+    // for the same instance work item. This field is incremented for each completion call so the backend can identify
+    // redundant completion calls for the same set of instance messages.
+    int32 completionCount = 14;
 }
 
 // Response payload for completing an orchestration work item.
 message CompleteOrchestrationWorkItemResponse {
-	// No fields
+    // No fields
 }
 
 // A message to be delivered to an orchestration by the backend.
@@ -238,6 +259,13 @@ message CompleteEntityWorkItemRequest {
     // The messages that were sent by the executed operations. This must
     // include any responses to the operation calls.
     repeated OrchestratorMessage messages = 5;
+
+    string instanceId = 7;
+
+    // Only non-zero in the when extended sessions are active, in which case complete  will be called multiple times
+    // for the same instance work item. This field is incremented for each completion call so the backend can identify
+    // redundant completion calls for the same set of instance messages.
+    int32 completionCount = 8;
 }
 
 // Response payload for completing an entity work item.
@@ -304,4 +332,34 @@ message WorkItemMetrics {
 message ConnectedWorkerMetrics {
     // Number of worker instances that are currently connected to the backend
     int32 count = 1 [json_name="count"];
+}
+
+// Request payload for releasing an orchestration work item.
+message ReleaseOrchestrationWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+}
+
+// Response payload for releasing an orchestration work item.
+message ReleaseOrchestrationWorkItemResponse {
+	// No fields
+}
+
+// Request payload for releasing an entity work item.
+message ReleaseEntityWorkItemRequest {
+    // The completion token that was provided when the work item was fetched.
+    string completionToken = 1;
+}
+
+// Response payload for releasing an entity work item.
+message ReleaseEntityWorkItemResponse {
+	// No fields
+}
+
+message CompleteInstanceWorkItemResponse {
+    oneof request {
+        CompleteOrchestrationWorkItemResponse orchestratorResponse = 1;
+        CompleteEntityWorkItemResponse entityResponse = 2;
+        HistoryChunk newMessages = 3;
+    }
 }
