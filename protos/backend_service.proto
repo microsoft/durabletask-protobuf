@@ -15,6 +15,7 @@ import "orchestrator_service.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/duration.proto";
 
 // gRPC service used by Durable Task Framework (DTFx) backend implementations.
 // The RPCs in this service are used by DTFx backends to manage orchestration state.
@@ -105,6 +106,17 @@ service BackendService {
     // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated".
     // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
     rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
+
+    // Notifies the backend that a worker is beginning a graceful drain. The backend will:
+    //   1. Stop dispatching new work items to this worker on its open GetWorkItems stream.
+    //   2. Keep that streaming connection open so the worker can complete in-flight work items via
+    //      the existing Complete*WorkItem RPCs without racing with the backend's disconnect cleanup,
+    //      which abandons leftover items.
+    // The worker is expected to close its GetWorkItems stream once it has finished draining.
+    //
+    // The RPC is idempotent: the worker may call it more than once with no additional effect.
+    // If no active connection is found for this worker, the RPC succeeds with workerFound=false.
+    rpc BeginWorkerDrain(BeginWorkerDrainRequest) returns (BeginWorkerDrainResponse);
 }
 
 // Request payload for adding new orchestration events.
@@ -304,6 +316,23 @@ message GetMetricsRequest {
 message GetMetricsResponse {
     // The current metrics for the backend service.
     BackendMetrics metrics = 1;
+}
+
+// Request payload for BeginWorkerDrain.
+message BeginWorkerDrainRequest {
+    // Optional hint for how long the worker plans to wait for in-flight work items to complete
+    // before it forcibly closes the GetWorkItems stream. The backend uses this only for
+    // telemetry / log enrichment; it does NOT enforce this timeout. May be unset.
+    google.protobuf.Duration drainTimeout = 1;
+}
+
+// Response payload for BeginWorkerDrain.
+message BeginWorkerDrainResponse {
+    // True if the backend found at least one active GetWorkItems connection for the calling
+    // worker and put it into drain mode. False if no matching connection was found
+    // (e.g. the connection had already disconnected); in that case the worker can proceed
+    // with shutdown, no drain is required server-side.
+    bool workerFound = 1;
 }
 
 // Metrics for the backend service.
