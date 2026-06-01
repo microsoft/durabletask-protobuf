@@ -833,7 +833,7 @@ message GetWorkItemsRequest {
     repeated WorkerCapability capabilities = 10;
     WorkItemFilters workItemFilters = 11;
     // Stable identifier of the worker process. Used by the backend to track
-    // distinct connected workers per TaskHub for serverless dispatch decisions.
+    // distinct connected workers per TaskHub for on-demand sandbox dispatch decisions.
     // Must be a GUID generated once per worker process.
     string worker_instance_id = 12;
 }
