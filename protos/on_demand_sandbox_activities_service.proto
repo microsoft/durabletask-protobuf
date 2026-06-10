@@ -33,7 +33,6 @@ message OnDemandSandboxActivityWorkerMessage {
 
 message OnDemandSandboxActivityWorkerStart {
   reserved 2;
-  reserved "worker_instance_id";
 
   string task_hub = 1;
   int32 max_activities_count = 3;
