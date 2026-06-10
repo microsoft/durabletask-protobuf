@@ -377,7 +377,10 @@ message OrchestratorResponse {
 
     // Zero-based position of the current chunk within a chunked completion sequence.
     // This field is omitted for non-chunked completions.
-    google.protobuf.Int32Value chunkIndex = 9 [deprecated=true];;
+    google.protobuf.Int32Value chunkIndex = 9 [deprecated=true];
+
+    // Marks if the worker was in the middle of (graceful) shutdown while the completing the corresponding request
+    bool isWorkerDraining = 10;
 }
 
 message CreateInstanceRequest {
@@ -641,6 +644,8 @@ message EntityBatchResult {
     repeated OperationInfo operationInfos = 6; // used only with DTS
     // Whether or not an entity state is required to complete the original EntityBatchRequest and none was provided.
     bool requiresState = 7;
+    // Marks if the worker was in the middle of (graceful) shutdown while the completing the corresponding request
+    bool isWorkerDraining = 8;
 }
 
 message EntityRequest {
