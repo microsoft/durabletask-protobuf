@@ -786,6 +786,12 @@ service TaskHubSidecarService {
     rpc PurgeInstances(PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
+
+    // Streams tombstoned large-payload blob tokens to a connected worker for deletion; the worker
+    // acks each deleted blob so the backend can hard-delete the corresponding row. Idempotent and
+    // safe with multiple worker replicas (unacked rows stay tombstoned and are re-streamed).
+    rpc PurgeExternalPayloads(stream PayloadPurged) returns (stream TombstonedPayload);
+
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
     rpc CompleteEntityTask(EntityBatchResult) returns (CompleteTaskResponse);
@@ -823,6 +829,21 @@ service TaskHubSidecarService {
     // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated".
     // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
     rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
+}
+
+// server -> client: a tombstoned payload row whose blob the worker must delete.
+message TombstonedPayload {
+    int32  partitionId = 1;
+    int64  instanceKey = 2;
+    int64  payloadId   = 3;
+    string token       = 4;   // e.g. "blob:v1:<container>:<blobName>"
+}
+
+// client -> server: ack sent after the worker deletes the blob; backend hard-deletes that row.
+message PayloadPurged {
+    int32 partitionId = 1;
+    int64 instanceKey = 2;
+    int64 payloadId   = 3;
 }
 
 message GetWorkItemsRequest {
