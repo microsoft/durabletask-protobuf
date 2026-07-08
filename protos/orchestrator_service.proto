@@ -790,7 +790,7 @@ service TaskHubSidecarService {
     // Streams tombstoned large-payload blob tokens to a connected worker for deletion; the worker
     // acks each deleted blob so the backend can hard-delete the corresponding row. Idempotent and
     // safe with multiple worker replicas (unacked rows stay tombstoned and are re-streamed).
-    rpc PurgeExternalPayloads(stream PayloadPurged) returns (stream TombstonedPayload);
+    rpc PurgeExternalPayloads(stream PayloadPurgeAck) returns (stream TombstonedPayload);
 
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
@@ -840,7 +840,7 @@ message TombstonedPayload {
 }
 
 // client -> server: ack sent after the worker deletes the blob; backend hard-deletes that row.
-message PayloadPurged {
+message PayloadPurgeAck {
     int32 partitionId = 1;
     int64 instanceKey = 2;
     int64 payloadId   = 3;
