@@ -57,6 +57,11 @@ service BackendService {
     // Starts a server stream for receiving work items
     rpc GetWorkItems (GetWorkItemsRequest) returns (stream WorkItem);
 
+    // Streams tombstoned large-payload blob tokens to a connected worker for deletion; the worker
+    // acks each deleted blob so the backend can hard-delete the corresponding row. Idempotent and
+    // safe with multiple worker replicas (unacked rows stay tombstoned and are re-streamed).
+    rpc PurgeExternalPayloads(stream PayloadPurgeAck) returns (stream TombstonedPayload);
+
     // Gets orchestration runtime state (history, etc.) for a given orchestration instance.
     rpc GetOrchestrationRuntimeState (GetOrchestrationRuntimeStateRequest) returns (GetOrchestrationRuntimeStateResponse);
 
