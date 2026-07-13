@@ -787,10 +787,15 @@ service TaskHubSidecarService {
 
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
 
-    // Streams tombstoned large-payload blob tokens to a connected worker for deletion; the worker
-    // acks each deleted blob so the backend can hard-delete the corresponding row. Idempotent and
-    // safe with multiple worker replicas (unacked rows stay tombstoned and are re-streamed).
-    rpc PurgeExternalPayloads(stream PayloadPurgeAck) returns (stream TombstonedPayload);
+    // Fetches up to `limit` tombstoned large-payload rows whose external blobs the worker must
+    // delete. The worker (which has storage credentials) deletes each blob, then calls
+    // AckPurgedPayloads so the backend can hard-delete those rows. Idempotent and safe under
+    // retries/duplicate callers (unacked rows stay tombstoned and are returned again).
+    rpc GetTombstonedPayloads(GetTombstonedPayloadsRequest) returns (GetTombstonedPayloadsResponse);
+
+    // Acks tombstoned payloads whose external blobs the worker has deleted; the backend hard-deletes
+    // the corresponding rows. Idempotent and safe under retries/duplicate callers.
+    rpc AckPurgedPayloads(AckPurgedPayloadsRequest) returns (AckPurgedPayloadsResponse);
 
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
@@ -844,6 +849,25 @@ message PayloadPurgeAck {
     int32 partitionId = 1;
     int64 instanceKey = 2;
     int64 payloadId   = 3;
+}
+
+// client -> server: request up to `limit` tombstoned payload rows to purge.
+message GetTombstonedPayloadsRequest {
+    int32 limit = 1;
+}
+
+// server -> client: the tombstoned payload rows whose blobs the worker must delete.
+message GetTombstonedPayloadsResponse {
+    repeated TombstonedPayload payloads = 1;
+}
+
+// client -> server: acks for payloads whose blobs the worker has deleted.
+message AckPurgedPayloadsRequest {
+    repeated PayloadPurgeAck acks = 1;
+}
+
+// server -> client: response acknowledging the hard-deletes.
+message AckPurgedPayloadsResponse {
 }
 
 message GetWorkItemsRequest {
