@@ -750,11 +750,15 @@ message InstallInstanceRequest {
 
     // The ordered history events of the orchestration instance to install.
     repeated HistoryEvent history = 2;
+
+    // The sequence number of the instance data to be installed
+    int64 sequenceNumber = 3;
 }
 
 // Response payload for installing an orchestration instance and its history.
 message InstallInstanceResponse {
     // True if the instance was installed, or false if an instance with the same ID already existed
+    // or the sequence number was not higher than what is currently stored for this instance
     // (in which case nothing was installed).
     bool installed = 1;
 }
