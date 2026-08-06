@@ -763,6 +763,18 @@ message InstallInstanceResponse {
     bool installed = 1;
 }
 
+message InstallMessageRequest {
+    OrchestrationInstance orchestrationInstance = 1;
+
+    HistoryEvent historyEvent = 2;
+
+    google.protobuf.Int64Value deliveryCount = 3;
+}
+
+message InstallMessageResponse {
+    bool installed = 1;
+}
+
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -846,6 +858,8 @@ service TaskHubSidecarService {
 
     // (Proof-of-concept) Installs an orchestration instance and its history directly into storage.
     rpc InstallInstance(InstallInstanceRequest) returns (InstallInstanceResponse);
+
+    rpc InstallMessage(InstallMessageRequest) returns (InstallMessageResponse);
 }
 
 message GetWorkItemsRequest {

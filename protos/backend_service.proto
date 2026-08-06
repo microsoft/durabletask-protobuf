@@ -112,6 +112,8 @@ service BackendService {
     // for execution; it imports an already-existing instance and its history as-is.
     rpc InstallInstance(InstallInstanceRequest) returns (InstallInstanceResponse);
 
+    rpc InstallMessage(InstallMessageRequest) returns (InstallMessageResponse);
+
     // Notifies the backend that a worker is beginning a graceful drain. The backend will:
     //   1. Stop dispatching new work items to this worker on its open GetWorkItems stream.
     //   2. Keep that streaming connection open so the worker can complete in-flight work items via
