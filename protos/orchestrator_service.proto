@@ -769,6 +769,11 @@ message InstallMessageRequest {
     HistoryEvent historyEvent = 2;
 
     google.protobuf.Int64Value deliveryCount = 3;
+
+    // Stable source-message identity scoped to the task hub and used to deduplicate installation.
+    // Azure Storage migration callers must use the exact case-sensitive
+    // "<queue-name>/<queue-message-id>" value.
+    optional string sourceMessageId = 4;
 }
 
 message InstallMessageResponse {
