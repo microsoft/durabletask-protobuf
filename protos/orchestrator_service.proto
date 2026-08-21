@@ -773,6 +773,9 @@ message InstallMessageRequest {
 
 message InstallMessageResponse {
     bool installed = 1;
+
+    // If the installation failed, the reason why
+    google.protobuf.StringValue reason = 2;
 }
 
 service TaskHubSidecarService {
