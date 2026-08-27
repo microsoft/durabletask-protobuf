@@ -59,19 +59,15 @@ message SetLargePayloadAutoPurgeResponse {
 
 // server -> client: one tombstoned large-payload row whose external blob the worker must delete.
 message LargePayloadTombstone {
-  int32 partition_id = 1;
-  int64 instance_key = 2;
-  int64 payload_id = 3;
+  // Opaque, backend-issued correlation token for this exact tombstone version. The worker must not
+  // interpret its format and must echo it unchanged in the purge result.
+  string tombstone_token = 1;
 
   // A self-describing SDK v2 token: "blob:v2:{fullBlobUrl}".
   // Legacy v1 tokens are never tombstoned: v1 carries a container name but not the storage
   // account, so a delete against the configured account cannot be verified. The backend
   // hard-deletes v1 payload rows instead.
-  string token = 4;
-
-  // Optimistic-concurrency guard. The worker echoes this value back unmodified in the result so
-  // the backend can reject duplicate or stale reports without taking a per-row lease.
-  int64 revision = 5;
+  string payload_token = 2;
 }
 
 // The outcome of a single blob deletion attempt. The split is by whether a failure can self-heal.
@@ -101,19 +97,13 @@ enum LargePayloadPurgeDisposition {
 
 // client -> server: the outcome of exactly one tombstoned row.
 message LargePayloadPurgeResult {
-  // Row identity, echoed from the corresponding LargePayloadTombstone.
-  int32 partition_id = 1;
-  int64 instance_key = 2;
-  int64 payload_id = 3;
-
-  // Echoed unmodified from the fetched tombstone; used as a compare-and-swap guard.
-  int64 revision = 4;
+  // Echoed unchanged from the corresponding LargePayloadTombstone.
+  string tombstone_token = 1;
 
   // The only field the backend acts on. Deliberately the only outcome field on this message:
   // anything finer would be write-only. Failure detail stays in the worker's own telemetry, which
-  // holds the full exception rather than a lossy classification, and a row is correlated to it by
-  // (partition_id, instance_key, payload_id).
-  LargePayloadPurgeDisposition disposition = 5;
+  // holds the full exception rather than a lossy classification.
+  LargePayloadPurgeDisposition disposition = 2;
 }
 
 // client -> server: request up to `limit` due tombstones for the caller's task hub.
