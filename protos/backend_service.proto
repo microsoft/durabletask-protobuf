@@ -114,6 +114,10 @@ service BackendService {
 
     rpc InstallMessage(InstallMessageRequest) returns (InstallMessageResponse);
 
+    // Permanently seals task-hub-wide entity migration input after snapshots are installed and source
+    // queues are drained. The operation is idempotent; once sealed, unknown migration installs are rejected.
+    rpc SealEntityMigrationInput(google.protobuf.Empty) returns (google.protobuf.Empty);
+
     // Notifies the backend that a worker is beginning a graceful drain. The backend will:
     //   1. Stop dispatching new work items to this worker on its open GetWorkItems stream.
     //   2. Keep that streaming connection open so the worker can complete in-flight work items via

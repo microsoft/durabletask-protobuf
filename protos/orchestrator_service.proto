@@ -183,6 +183,20 @@ message EntityOperationSignaledEvent {
     google.protobuf.Timestamp scheduledTime = 3;
     google.protobuf.StringValue input = 4;
     google.protobuf.StringValue targetInstanceId = 5; // used only within histories, null in messages
+
+    // Source RequestMessage parent instance; used only within messages, null in histories.
+    google.protobuf.StringValue parentInstanceId = 6;
+
+    // Source RequestMessage parent execution; used only within messages, null in histories.
+    google.protobuf.StringValue parentExecutionId = 7;
+
+    // Timestamp assigned to the source RequestMessage for ordering and deduplication.
+    // This is separate from HistoryEvent.timestamp.
+    google.protobuf.Timestamp requestMessageTimestamp = 8;
+
+    // Timestamp of the preceding source RequestMessage in the ordering stream.
+    // Absence means DateTime.MinValue/no predecessor. This is separate from HistoryEvent.timestamp.
+    google.protobuf.Timestamp requestMessagePredecessorTimestamp = 9;
 }
 
 message EntityOperationCalledEvent {
@@ -193,6 +207,14 @@ message EntityOperationCalledEvent {
     google.protobuf.StringValue parentInstanceId = 5;  // used only within messages, null in histories
     google.protobuf.StringValue parentExecutionId = 6;  // used only within messages, null in histories
     google.protobuf.StringValue targetInstanceId = 7; // used only within histories, null in messages
+
+    // Timestamp assigned to the source RequestMessage for ordering and deduplication.
+    // This is separate from HistoryEvent.timestamp.
+    google.protobuf.Timestamp requestMessageTimestamp = 8;
+
+    // Timestamp of the preceding source RequestMessage in the ordering stream.
+    // Absence means DateTime.MinValue/no predecessor. This is separate from HistoryEvent.timestamp.
+    google.protobuf.Timestamp requestMessagePredecessorTimestamp = 9;
 }
 
 message EntityLockRequestedEvent {
@@ -200,6 +222,17 @@ message EntityLockRequestedEvent {
     repeated string lockSet = 2;
     int32 position = 3;
     google.protobuf.StringValue parentInstanceId = 4; // used only within messages, null in histories 
+
+    // Source RequestMessage parent execution; used only within messages, null in histories.
+    google.protobuf.StringValue parentExecutionId = 5;
+
+    // Timestamp assigned to the source RequestMessage for ordering and deduplication.
+    // This is separate from HistoryEvent.timestamp.
+    google.protobuf.Timestamp requestMessageTimestamp = 6;
+
+    // Timestamp of the preceding source RequestMessage in the ordering stream.
+    // Absence means DateTime.MinValue/no predecessor. This is separate from HistoryEvent.timestamp.
+    google.protobuf.Timestamp requestMessagePredecessorTimestamp = 7;
 }
 
 message EntityOperationCompletedEvent {
@@ -761,6 +794,11 @@ message InstallInstanceResponse {
     // or the sequence number was not higher than what is currently stored for this instance
     // (in which case nothing was installed).
     bool installed = 1;
+
+    // Entity ordering metadata version recognized and persisted from the raw scheduler state in
+    // InstallInstanceRequest.orchestrationState.input. Version 1 acknowledges the legacy MessageSorter
+    // metadata; zero means that the metadata was ignored or is unsupported.
+    uint32 acceptedEntityOrderingMetadataVersion = 2;
 }
 
 message InstallMessageRequest {
@@ -776,11 +814,29 @@ message InstallMessageRequest {
     string sourceMessageId = 4;
 }
 
+enum InstallMessageOutcome {
+    INSTALL_MESSAGE_OUTCOME_UNSPECIFIED = 0;
+    INSTALL_MESSAGE_OUTCOME_INSTALLED = 1;
+    INSTALL_MESSAGE_OUTCOME_ALREADY_INSTALLED = 2;
+    INSTALL_MESSAGE_OUTCOME_REJECTED = 3;
+}
+
 message InstallMessageResponse {
     bool installed = 1;
 
     // If the installation failed, the reason why
     google.protobuf.StringValue reason = 2;
+
+    // Typed result of the installation attempt. Older servers leave this unspecified.
+    InstallMessageOutcome outcome = 3;
+
+    // Exact source message ID recognized by the server for this attempt.
+    // An empty value means that the server did not acknowledge source-message identity.
+    string acknowledgedSourceMessageId = 4;
+
+    // Entity ordering metadata version accepted from the installed entity event.
+    // Version 1 acknowledges the legacy RequestMessage ordering fields; zero means unsupported.
+    uint32 acceptedEntityOrderingMetadataVersion = 5;
 }
 
 service TaskHubSidecarService {
@@ -868,6 +924,10 @@ service TaskHubSidecarService {
     rpc InstallInstance(InstallInstanceRequest) returns (InstallInstanceResponse);
 
     rpc InstallMessage(InstallMessageRequest) returns (InstallMessageResponse);
+
+    // Permanently seals task-hub-wide entity migration input after snapshots are installed and source
+    // queues are drained. The operation is idempotent; once sealed, unknown migration installs are rejected.
+    rpc SealEntityMigrationInput(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 message GetWorkItemsRequest {
