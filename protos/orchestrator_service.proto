@@ -184,19 +184,11 @@ message EntityOperationSignaledEvent {
     google.protobuf.StringValue input = 4;
     google.protobuf.StringValue targetInstanceId = 5; // used only within histories, null in messages
 
-    // Source RequestMessage parent instance; used only within messages, null in histories.
+    // Fields used by the DTS backend only
     google.protobuf.StringValue parentInstanceId = 6;
-
-    // Source RequestMessage parent execution; used only within messages, null in histories.
     google.protobuf.StringValue parentExecutionId = 7;
-
-    // Timestamp assigned to the source RequestMessage for ordering and deduplication.
-    // This is separate from HistoryEvent.timestamp.
-    google.protobuf.Timestamp requestMessageTimestamp = 8;
-
-    // Timestamp of the preceding source RequestMessage in the ordering stream.
-    // Absence means DateTime.MinValue/no predecessor. This is separate from HistoryEvent.timestamp.
-    google.protobuf.Timestamp requestMessagePredecessorTimestamp = 9;
+    google.protobuf.Timestamp timestamp = 8;
+    google.protobuf.Timestamp predecessorTimestamp = 9;
 }
 
 message EntityOperationCalledEvent {
@@ -208,13 +200,9 @@ message EntityOperationCalledEvent {
     google.protobuf.StringValue parentExecutionId = 6;  // used only within messages, null in histories
     google.protobuf.StringValue targetInstanceId = 7; // used only within histories, null in messages
 
-    // Timestamp assigned to the source RequestMessage for ordering and deduplication.
-    // This is separate from HistoryEvent.timestamp.
-    google.protobuf.Timestamp requestMessageTimestamp = 8;
-
-    // Timestamp of the preceding source RequestMessage in the ordering stream.
-    // Absence means DateTime.MinValue/no predecessor. This is separate from HistoryEvent.timestamp.
-    google.protobuf.Timestamp requestMessagePredecessorTimestamp = 9;
+    // Fields used by the DTS backend only
+    google.protobuf.Timestamp timestamp = 8;
+    google.protobuf.Timestamp predecessorTimestamp = 9;
 }
 
 message EntityLockRequestedEvent {
@@ -223,16 +211,10 @@ message EntityLockRequestedEvent {
     int32 position = 3;
     google.protobuf.StringValue parentInstanceId = 4; // used only within messages, null in histories 
 
-    // Source RequestMessage parent execution; used only within messages, null in histories.
+    // Fields used by the DTS backend only
     google.protobuf.StringValue parentExecutionId = 5;
-
-    // Timestamp assigned to the source RequestMessage for ordering and deduplication.
-    // This is separate from HistoryEvent.timestamp.
-    google.protobuf.Timestamp requestMessageTimestamp = 6;
-
-    // Timestamp of the preceding source RequestMessage in the ordering stream.
-    // Absence means DateTime.MinValue/no predecessor. This is separate from HistoryEvent.timestamp.
-    google.protobuf.Timestamp requestMessagePredecessorTimestamp = 7;
+    google.protobuf.Timestamp timestamp = 6;
+    google.protobuf.Timestamp predecessorTimestamp = 7;
 }
 
 message EntityOperationCompletedEvent {
