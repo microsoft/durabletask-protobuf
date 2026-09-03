@@ -622,6 +622,8 @@ message EntityMetadata {
     int32 backlogQueueSize = 3;
     google.protobuf.StringValue lockedBy = 4;
     google.protobuf.StringValue serializedState = 5;
+    // TESTING ONLY: exposes sorter state for verification.
+    google.protobuf.StringValue sorterState = 6;
 }
 
 message CleanEntityStorageRequest {
