@@ -48,6 +48,10 @@ service BackendService {
     // Purges the state of one or more orchestration instances.
     rpc PurgeInstances (PurgeInstancesRequest) returns (PurgeInstancesResponse);
 
+    // Purges all storage migration bookkeeping
+    // Must be called only after storage migration has fully completed.
+    rpc PurgeMigrationInformation (PurgeMigrationInformationRequest) returns (PurgeMigrationInformationResponse);
+
  	// Restarts an orchestration instance with the option to use a new instance ID.
     rpc RestartInstance (RestartInstanceRequest) returns (RestartInstanceResponse);
 
@@ -166,6 +170,16 @@ message WaitForInstanceRequest {
 message WaitForInstanceResponse {
     bool exists = 1;
     OrchestrationState orchestrationState = 2;
+}
+
+// Request for purging storage migration bookkeeping
+message PurgeMigrationInformationRequest {
+    // No fields
+}
+
+// Response for purging storage migration bookkeeping
+message PurgeMigrationInformationResponse {
+    // No fields
 }
 
 // Request parameters for fetching orchestration runtime state.
