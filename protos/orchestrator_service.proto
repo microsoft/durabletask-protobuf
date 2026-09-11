@@ -391,6 +391,12 @@ message CreateInstanceRequest {
     map<string, string> tags = 8;
     TraceContext parentTraceContext = 9;
     google.protobuf.Timestamp requestTime = 10;
+    // Optional. Maximum time the orchestration may remain in the PENDING state (i.e. created
+    // but not yet picked up by a worker) before it is automatically expired and moved to a
+    // terminal state. This guards against orchestrations that can never be dispatched because
+    // no connected worker matches their version or work item filters. Unset or zero means no
+    // expiration (the orchestration remains pending indefinitely, the default behavior).
+    google.protobuf.Duration pendingInstanceTimeout = 11;
 }
 
 message OrchestrationIdReusePolicy {
