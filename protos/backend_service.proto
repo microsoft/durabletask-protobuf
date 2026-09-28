@@ -14,7 +14,6 @@ import "orchestrator_service.proto";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
 
 // gRPC service used by Durable Task Framework (DTFx) backend implementations.
@@ -47,6 +46,10 @@ service BackendService {
 
     // Purges the state of one or more orchestration instances.
     rpc PurgeInstances (PurgeInstancesRequest) returns (PurgeInstancesResponse);
+
+    // Releases all entity messages buffered during storage migration into their entities' inboxes.
+    // Call after draining all (unscheduled) source entity messages and before purging migration bookkeeping.
+    rpc ReleaseBufferedEntityMessages (ReleaseBufferedEntityMessagesRequest) returns (ReleaseBufferedEntityMessagesResponse);
 
     // Purges all storage migration bookkeeping
     // Must be called only after storage migration has fully completed.
@@ -118,10 +121,6 @@ service BackendService {
 
     rpc InstallMessage(InstallMessageRequest) returns (InstallMessageResponse);
 
-    // Permanently seals task-hub-wide entity migration input after snapshots are installed and source
-    // queues are drained. The operation is idempotent; once sealed, unknown migration installs are rejected.
-    rpc SealEntityMigrationInput(google.protobuf.Empty) returns (google.protobuf.Empty);
-
     // Notifies the backend that a worker is beginning a graceful drain. The backend will:
     //   1. Stop dispatching new work items to this worker on its open GetWorkItems stream.
     //   2. Keep that streaming connection open so the worker can complete in-flight work items via
@@ -170,6 +169,16 @@ message WaitForInstanceRequest {
 message WaitForInstanceResponse {
     bool exists = 1;
     OrchestrationState orchestrationState = 2;
+}
+
+// Request for releasing buffered entity messages for the task hub.
+message ReleaseBufferedEntityMessagesRequest {
+    // No fields
+}
+
+// Response for releasing buffered entity messages for the task hub.
+message ReleaseBufferedEntityMessagesResponse {
+    // No fields
 }
 
 // Request for purging storage migration bookkeeping
