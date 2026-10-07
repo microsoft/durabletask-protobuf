@@ -4,13 +4,6 @@ This repo contains [protocol buffer](https://developers.google.com/protocol-buff
 used by the Durable Task framework sidecar architecture. It's recommended that Durable Task language SDKs reference
 the protobuf contracts in this repo via [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
-## Entity-scheduled orchestration tags
-
-`StartNewOrchestrationAction.tags` is a `map<string, string>` at field 8. Omitting tags or sending an
-empty map preserves the existing wire representation. Older receivers do not expose this field and
-may discard it. SDKs must send the tags and receiving services must consume them to persist them or
-make them searchable; the protocol definition alone does not enable scheduler tag search.
-
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
