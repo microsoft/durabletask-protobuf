@@ -769,9 +769,7 @@ message InstallInstanceRequest {
     // The sequence number of the instance data to be installed
     int64 sequenceNumber = 3;
 
-    // Replace existing orchestration history even when the execution ID is unchanged.
-    // Used for source-side rewinds that modify history in place. False preserves append behavior.
-    // Equal or older sequence numbers are still rejected, regardless of this flag.
+    // A flag to replace the existing history even when the execution ID is unchanged
     bool overwriteHistory = 4;
 }
 
