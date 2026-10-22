@@ -183,12 +183,14 @@ message ReleaseBufferedEntityMessagesResponse {
 
 // Request for purging storage migration bookkeeping
 message PurgeMigrationInformationRequest {
-    // No fields
+    // Allow a short pass. Call again while isComplete is false.
+    bool allowPartial = 1;
 }
 
 // Response for purging storage migration bookkeeping
 message PurgeMigrationInformationResponse {
-    // No fields
+    // True when all bookkeeping is gone. Older servers omit this after a full purge.
+    google.protobuf.BoolValue isComplete = 1;
 }
 
 // Request parameters for fetching orchestration runtime state.
