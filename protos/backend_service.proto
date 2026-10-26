@@ -183,8 +183,8 @@ message ReleaseBufferedEntityMessagesResponse {
 
 // Request for purging storage migration bookkeeping
 message PurgeMigrationInformationRequest {
-    // Allow a short pass. Call again while isComplete is false.
-    bool allowPartial = 1;
+    reserved 1;
+    reserved "allowPartial";
 }
 
 // Response for purging storage migration bookkeeping
