@@ -378,6 +378,11 @@ message OrchestratorResponse {
     // Zero-based position of the current chunk within a chunked completion sequence.
     // This field is omitted for non-chunked completions.
     google.protobuf.Int32Value chunkIndex = 9 [deprecated=true];
+
+    // Only non-zero when extended sessions are active, in which case completion is called multiple times
+    // for the same instance work item. Incremented for each completion call so the service can identify
+    // redundant or stale completion calls for the same work item.
+    int32 completionCount = 10;
 }
 
 message CreateInstanceRequest {
@@ -641,6 +646,10 @@ message EntityBatchResult {
     repeated OperationInfo operationInfos = 6; // used only with DTS
     // Whether or not an entity state is required to complete the original EntityBatchRequest and none was provided.
     bool requiresState = 7;
+    // Only non-zero when extended sessions are active, in which case completion is called multiple times
+    // for the same entity work item. Incremented for each completion call so the service can identify
+    // redundant or stale completion calls for the same work item.
+    int32 completionCount = 8;
 }
 
 message EntityRequest {
@@ -733,6 +742,28 @@ message AbandonEntityTaskResponse {
     // Empty.
 }
 
+message ReleaseTaskWorkItemRequest {
+    string completionToken = 1;
+}
+
+message ReleaseTaskWorkItemResponse {
+    // Empty.
+}
+
+message ExtendedSessionAck {
+    // The number of history events stored for the instance's current execution
+    // after applying this completion. It is 0 after continue-as-new and for entities.
+    int32 historyEventCount = 1;
+}
+
+message CompleteTaskWithExtendedSessionResponse {
+    oneof response {
+        ExtendedSessionAck ack = 1;
+        HealthPing healthPing = 2;
+        HistoryChunk newMessages = 3;
+    }
+}
+
 message SkipGracefulOrchestrationTerminationsRequest {
     InstanceBatch instanceBatch = 1;
     google.protobuf.StringValue reason = 2;
@@ -789,7 +820,9 @@ service TaskHubSidecarService {
     rpc GetWorkItems(GetWorkItemsRequest) returns (stream WorkItem);
     rpc CompleteActivityTask(ActivityResponse) returns (CompleteTaskResponse);
     rpc CompleteOrchestratorTask(OrchestratorResponse) returns (CompleteTaskResponse);
+    rpc CompleteOrchestratorTaskWithExtendedSession(OrchestratorResponse) returns (stream CompleteTaskWithExtendedSessionResponse);
     rpc CompleteEntityTask(EntityBatchResult) returns (CompleteTaskResponse);
+    rpc CompleteEntityTaskWithExtendedSession(EntityBatchResult) returns (stream CompleteTaskWithExtendedSessionResponse);
 
     // Gets the history of an orchestration instance as a stream of events.
     rpc StreamInstanceHistory(StreamInstanceHistoryRequest) returns (stream HistoryChunk);
@@ -820,6 +853,12 @@ service TaskHubSidecarService {
 
     // Abandon an entity work item
     rpc AbandonTaskEntityWorkItem(AbandonEntityTaskRequest) returns (AbandonEntityTaskResponse);
+
+    // Release an orchestration work item held in an extended session
+    rpc ReleaseTaskOrchestratorWorkItem(ReleaseTaskWorkItemRequest) returns (ReleaseTaskWorkItemResponse);
+
+    // Release an entity work item held in an extended session
+    rpc ReleaseTaskEntityWorkItem(ReleaseTaskWorkItemRequest) returns (ReleaseTaskWorkItemResponse);
 
     // "Skip" graceful termination of orchestrations by immediately changing their status in storage to "terminated".
     // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
