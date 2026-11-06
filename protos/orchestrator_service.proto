@@ -759,6 +759,25 @@ message SkipGracefulOrchestrationTerminationsResponse {
     repeated string unterminatedInstanceIds = 1;
 }
 
+// Installs snapshots in order within each destination partition.
+message InstallInstancesRequest {
+    repeated InstallInstanceRequest instances = 1;
+}
+
+message InstallInstancesResponse {
+    // Results have the same order as the requested instances.
+    repeated InstallInstanceResponse results = 1;
+}
+
+message InstallMessagesRequest {
+    repeated InstallMessageRequest messages = 1;
+}
+
+message InstallMessagesResponse {
+    // Results have the same order as the requested messages.
+    repeated InstallMessageResponse results = 1;
+}
+
 // Request payload for installing an orchestration instance and its history directly into storage.
 message InstallInstanceRequest {
     // The metadata of the orchestration instance to install.
@@ -886,9 +905,9 @@ service TaskHubSidecarService {
     rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
 
     // (Proof-of-concept) Installs an orchestration instance and its history directly into storage.
-    rpc InstallInstance(InstallInstanceRequest) returns (InstallInstanceResponse);
+    rpc InstallInstances(InstallInstancesRequest) returns (InstallInstancesResponse);
 
-    rpc InstallMessage(InstallMessageRequest) returns (InstallMessageResponse);
+    rpc InstallMessages(InstallMessagesRequest) returns (InstallMessagesResponse);
 }
 
 message GetWorkItemsRequest {
