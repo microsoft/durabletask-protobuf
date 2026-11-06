@@ -226,11 +226,59 @@ message CompleteOrchestrationWorkItemRequest {
     // for the same instance work item. This field is incremented for each completion call so the backend can identify
     // redundant completion calls for the same set of instance messages.
     int32 completionCount = 13;
+
+    // Optional provenance when the provider substitutes a failed completion for an infrastructure failure.
+    // Omit for ordinary application failures. This is diagnostic metadata, not an authorization decision;
+    // the backend must validate it and return its accepted values in the outcome.
+    OrchestrationCompletionFailure providerFailure = 14;
 }
 
 // Response payload for completing an orchestration work item.
 message CompleteOrchestrationWorkItemResponse {
-    // No fields
+    // Authoritative outcome, populated only after the backend accepts the completion.
+    // Absent for legacy/non-authoritative acknowledgements; callers must not infer an accepted status.
+    // Unaccepted or stale completions must not fabricate an outcome.
+    OrchestrationCompletionOutcome outcome = 1;
+}
+
+// Payload-safe diagnostics for a provider- or backend-generated failed completion, not an application failure.
+message OrchestrationCompletionFailure {
+    // Bounded, sanitized infrastructure failure details. All nested fields, including properties and inner
+    // failures, must exclude user payloads, completion tokens, credentials, and storage response bodies.
+    TaskFailureDetails failureDetails = 1;
+
+    // Stable machine-readable reason for reporting the infrastructure failure, not raw exception text.
+    string reportingReason = 2;
+
+    // Serialized size of the original whole completion request, when known. Absence means unavailable.
+    google.protobuf.Int32Value requestSizeBytes = 3;
+
+    // Configured size limit in bytes, when known. Absence means unavailable.
+    google.protobuf.Int64Value sizeLimitBytes = 4;
+
+    // "CompletionRequest" identifies an aggregate limit; "ExternalizedPayload" identifies an individual
+    // payload limit. "BackendValidation" identifies a validation replacement without a size limit.
+    // Omit when unavailable. The whole request size must not be compared to an individual-payload limit.
+    google.protobuf.StringValue sizeLimitType = 5;
+}
+
+// Final outcome of an accepted work-item completion, which may differ from the requested outcome.
+// This describes one accepted completion, not a guarantee of durable notification delivery.
+message OrchestrationCompletionOutcome {
+    string instanceId = 1;
+    google.protobuf.StringValue executionId = 2;
+    google.protobuf.StringValue functionName = 3;
+
+    // Stable, opaque, token-free identity for deduplicating reports of this accepted completion.
+    // It must distinguish completion turns and executions without exposing the completion token.
+    string completionIdentity = 4;
+
+    // Actual accepted status, including nonterminal statuses; not merely the caller-proposed status.
+    OrchestrationStatus runtimeStatus = 5;
+
+    // Present only when the accepted status is FAILED due to a provider- or backend-generated failure.
+    // Includes validated provider provenance or backend-generated diagnostics; absent for application failures.
+    OrchestrationCompletionFailure providerFailure = 6;
 }
 
 // A message to be delivered to an orchestration by the backend.
@@ -387,6 +435,8 @@ message ReleaseEntityWorkItemResponse {
 
 message CompleteInstanceWorkItemResponse {
     oneof request {
+        // Initial extended-session acknowledgement uses the same accepted outcome as the unary RPC.
+        // Later health-ping acknowledgements may omit the outcome and are not authoritative completions.
         CompleteOrchestrationWorkItemResponse orchestratorResponse = 1;
         CompleteEntityWorkItemResponse entityResponse = 2;
         HistoryChunk newMessages = 3;
