@@ -546,6 +546,9 @@ message RestartInstanceResponse {
 // and input, without copying its history. When source and target IDs differ, the
 // clone's source lineage identifies sourceInstanceId (the immediate source), not
 // an earlier ancestor. Sub-orchestrations must not inherit this source lineage.
+// The backend stores lineage internally. This protocol does not expose it or
+// require SDKs to expose it. When IDs match, lineage follows the backend's
+// existing in-place restart behavior.
 message CloneInstanceRequest {
     // Required, nonblank ID of the source orchestration.
     string sourceInstanceId = 1;
@@ -784,8 +787,11 @@ service TaskHubSidecarService {
     rpc RestartInstance(RestartInstanceRequest) returns (RestartInstanceResponse);
 
     // Clones an orchestration to an explicit target instance ID.
-    // Implementations must reject invalid requests and unsupported cloning or
-    // version semantics before scheduling or creating any orchestration.
+    // Errors:
+    // - INVALID_ARGUMENT: either ID is empty or whitespace-only.
+    // - NOT_FOUND: the source instance does not exist.
+    // - UNIMPLEMENTED: cloning or the requested version behavior is unsupported.
+    // Return these errors before scheduling or creating any orchestration.
     // Options must not be ignored, and callers and servers must not fall back
     // to RestartInstance. Servers without this RPC return UNIMPLEMENTED without
     // invoking RestartInstance.
