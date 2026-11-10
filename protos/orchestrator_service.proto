@@ -803,70 +803,6 @@ message SkipGracefulOrchestrationTerminationsResponse {
     repeated string unterminatedInstanceIds = 1;
 }
 
-// Installs snapshots in order within each destination partition.
-message InstallInstancesRequest {
-    repeated InstallInstanceRequest instances = 1;
-}
-
-message InstallInstancesResponse {
-    // Results have the same order as the requested instances.
-    repeated InstallInstanceResponse results = 1;
-}
-
-message InstallMessagesRequest {
-    repeated InstallMessageRequest messages = 1;
-}
-
-message InstallMessagesResponse {
-    // Results have the same order as the requested messages.
-    repeated InstallMessageResponse results = 1;
-}
-
-// Request payload for installing an orchestration instance and its history directly into storage.
-message InstallInstanceRequest {
-    // The metadata of the orchestration instance to install.
-    OrchestrationState orchestrationState = 1;
-
-    // The ordered history events of the orchestration instance to install.
-    repeated HistoryEvent history = 2;
-
-    // The sequence number of the instance data to be installed
-    int64 sequenceNumber = 3;
-
-    // A flag to replace the existing history even when the execution ID is unchanged
-    bool overwriteHistory = 4;
-}
-
-// Response payload for installing an orchestration instance and its history.
-message InstallInstanceResponse {
-    // True if the instance was installed, or false if an instance with the same ID already existed
-    // or the sequence number was not higher than what is currently stored for this instance
-    // (in which case nothing was installed).
-    bool installed = 1;
-}
-
-message InstallMessageRequest {
-    OrchestrationInstance orchestrationInstance = 1;
-
-    HistoryEvent historyEvent = 2;
-
-    google.protobuf.Int64Value deliveryCount = 3;
-
-    // Stable source-message identity scoped to the task hub and used to deduplicate installation.
-    // Azure Storage migration callers must use the exact case-sensitive
-    // "<queue-name>/<queue-message-id>" value.
-    string sourceMessageId = 4;
-}
-
-message InstallMessageResponse {
-    // True when durably accepted, including buffered entity requests and source-order duplicates.
-    // Repeating an already accepted sourceMessageId returns false with a duplicate reason.
-    bool installed = 1;
-
-    // If the installation failed, the reason why
-    google.protobuf.StringValue reason = 2;
-}
-
 service TaskHubSidecarService {
     // Sends a hello request to the sidecar service.
     rpc Hello(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -978,10 +914,6 @@ service TaskHubSidecarService {
     // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
     rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
 
-    // (Proof-of-concept) Installs an orchestration instance and its history directly into storage.
-    rpc InstallInstances(InstallInstancesRequest) returns (InstallInstancesResponse);
-
-    rpc InstallMessages(InstallMessagesRequest) returns (InstallMessagesResponse);
 }
 
 message GetWorkItemsRequest {
