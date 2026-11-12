@@ -4,6 +4,25 @@ This repo contains [protocol buffer](https://developers.google.com/protocol-buff
 used by the Durable Task framework sidecar architecture. It's recommended that Durable Task language SDKs reference
 the protobuf contracts in this repo via [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
+## Activity retry metadata
+
+`TaskScheduledEvent.retryMetadata` (field 6) and `ActivityRequest.retryMetadata` (field 8)
+share the optional `RetryMetadata` message. The orchestration framework calculates the
+metadata; services persist it with the scheduled event and deliver it unchanged to the
+activity worker. Completion and failure events continue to correlate through
+`taskScheduledId` and do not carry retry metadata.
+
+When metadata is present, `attemptNumber` and `maxAttempts` must be positive `int32`
+values, with `attemptNumber <= maxAttempts`. Attempts are one-based, and `maxAttempts`
+includes the initial attempt. `retryGroupId` must be nonempty and remain stable for the
+same logical activity call across attempts and replay. Consumers must validate these
+invariants and report invalid metadata as an error rather than fill in defaults.
+
+Message presence is significant: calls without a retry policy, older history, and
+components that do not supply retry metadata omit the message. Absence does not imply
+an attempt count, maximum, or group identifier; an empty message is present but invalid.
+The new fields are additive, so older protobuf readers can ignore them.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
