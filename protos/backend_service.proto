@@ -114,6 +114,12 @@ service BackendService {
     // Note that a maximum of 500 orchestrations can be terminated at a time using this method.
     rpc SkipGracefulOrchestrationTerminations(SkipGracefulOrchestrationTerminationsRequest) returns (SkipGracefulOrchestrationTerminationsResponse);
 
+    // Opens a new attempt after the previous attempt is closed and cleaned.
+    rpc StartMigration(StartMigrationRequest) returns (StartMigrationResponse);
+
+    // Stops installs and waits for every partition's closing checkpoint.
+    rpc CloseMigration(CloseMigrationRequest) returns (CloseMigrationResponse);
+
     // Imports instance snapshots and histories without scheduling them for execution.
     rpc InstallInstances(InstallInstancesRequest) returns (InstallInstancesResponse);
 
@@ -170,9 +176,27 @@ message WaitForInstanceResponse {
     OrchestrationState orchestrationState = 2;
 }
 
+message StartMigrationRequest {
+    // A new, nonempty UUID. Reuse it only to retry this same start.
+    string migrationId = 1;
+    // Empty only when this task hub has never started a migration.
+    google.protobuf.StringValue expectedPreviousMigrationId = 2;
+}
+
+message StartMigrationResponse {
+}
+
+message CloseMigrationRequest {
+    string migrationId = 1;
+}
+
+message CloseMigrationResponse {
+}
+
 // Installs snapshots in order within each destination partition.
 message InstallInstancesRequest {
     repeated InstallInstanceRequest instances = 1;
+    string migrationId = 2;
 }
 
 message InstallInstancesResponse {
@@ -182,6 +206,7 @@ message InstallInstancesResponse {
 
 message InstallMessagesRequest {
     repeated InstallMessageRequest messages = 1;
+    string migrationId = 2;
 }
 
 message InstallMessagesResponse {
@@ -236,7 +261,7 @@ message InstallMessageResponse {
 
 // Request for releasing buffered entity messages for the task hub.
 message ReleaseBufferedEntityMessagesRequest {
-    // No fields
+    string migrationId = 1;
 }
 
 // Response for releasing buffered entity messages for the task hub.
@@ -248,6 +273,7 @@ message ReleaseBufferedEntityMessagesResponse {
 message PurgeMigrationInformationRequest {
     reserved 1;
     reserved "allowPartial";
+    string migrationId = 2;
 }
 
 // Response for purging storage migration bookkeeping
