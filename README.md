@@ -4,6 +4,30 @@ This repo contains [protocol buffer](https://developers.google.com/protocol-buff
 used by the Durable Task framework sidecar architecture. It's recommended that Durable Task language SDKs reference
 the protobuf contracts in this repo via [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
+## Orchestration completion acknowledgements
+
+`BackendService.CompleteOrchestrationWorkItem` can return an optional `outcome` describing the
+server-accepted completion. The initial `orchestratorResponse` acknowledgement from
+`CompleteOrchestrationWorkItemWithExtendedSession` carries the same response. Consumers must use
+the accepted status rather than assuming the requested status was persisted. Nonterminal statuses
+are valid outcomes; unaccepted or stale requests must not produce an authoritative outcome.
+
+An outcome correlates the instance, execution, and orchestration function with a stable, token-free
+completion identity. Its optional `providerFailure` identifies provider- or backend-generated failed
+completions separately from ordinary application failures. Providers can supply explicit provenance
+in request field `providerFailure`; backends must validate that diagnostic metadata, not treat it as
+an authorization decision. Failure details and reporting reasons must be bounded and payload-safe,
+excluding completion tokens, credentials, user payloads, and storage response bodies. Optional size
+diagnostics distinguish a `CompletionRequest` aggregate limit from an `ExternalizedPayload`
+individual-payload limit; the reported whole-request size is not an individual-payload measurement.
+`BackendValidation` identifies a validation replacement without a size limit.
+
+These additions preserve existing field numbers and RPC shapes. Old clients ignore the new fields,
+and old servers can continue returning empty acknowledgements. A missing outcome (including a
+later extended-session health ping) is a legacy/non-authoritative acknowledgement, not confirmation
+of a particular final status. Completion identities support deduplicating reports but do not guarantee
+durable notification delivery. Both peers need support for this contract to report authoritative outcomes.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
