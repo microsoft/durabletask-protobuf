@@ -55,6 +55,9 @@ service BackendService {
     // Must be called only after storage migration has fully completed.
     rpc PurgeMigrationInformation (PurgeMigrationInformationRequest) returns (PurgeMigrationInformationResponse);
 
+    // Deletes imported data and its bookkeeping after rollback. Await CloseMigration first.
+    rpc RollbackMigration (RollbackMigrationRequest) returns (RollbackMigrationResponse);
+
  	// Restarts an orchestration instance with the option to use a new instance ID.
     rpc RestartInstance (RestartInstanceRequest) returns (RestartInstanceResponse);
 
@@ -280,6 +283,15 @@ message PurgeMigrationInformationRequest {
 message PurgeMigrationInformationResponse {
     // True when all bookkeeping is gone. Older servers omit this after a full purge.
     google.protobuf.BoolValue isComplete = 1;
+}
+
+message RollbackMigrationRequest {
+    string migrationId = 1;
+}
+
+message RollbackMigrationResponse {
+    // False means the caller should repeat this request to finish cleanup.
+    bool isComplete = 1;
 }
 
 // Request parameters for fetching orchestration runtime state.
