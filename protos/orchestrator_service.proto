@@ -26,6 +26,8 @@ message ActivityRequest {
     int32 taskId = 5;
     TraceContext parentTraceContext = 6;
     map<string, string> tags = 7;
+    // The timestamp of the original TaskScheduled history event.
+    google.protobuf.Timestamp timestamp = 8;
 }
 
 message ActivityResponse {
